@@ -18,9 +18,9 @@ public static class BIP44
     /// <summary>
     /// Constructs a derivation path typically used by EVM chains and writes it to a provided span.
     /// </summary>
-    /// <param name="accountIndex"></param>
     /// <param name="destination"></param>
-    public static void Ethereum(uint accountIndex, Span<uint> destination)
+    /// <param name="accountIndex"></param>
+    public static void Ethereum(Span<uint> destination, uint accountIndex = 0)
         => WriteInto(destination,
             BIP32.HardenedOffset + 44,
             BIP32.HardenedOffset + (uint) Slip44CoinType.Ethereum,
@@ -40,9 +40,9 @@ public static class BIP44
     /// <summary>
     /// Constructs a derivation path typically used by Cosmos chains and writes it to a provided span.
     /// </summary>
-    /// <param name="accountIndex"></param>
     /// <param name="destination"></param>
-    public static void Cosmos(uint accountIndex, Span<uint> destination)
+    /// <param name="accountIndex"></param>
+    public static void Cosmos(Span<uint> destination, uint accountIndex)
         => WriteInto(destination,
             BIP32.HardenedOffset + 44,
             BIP32.HardenedOffset + (uint) Slip44CoinType.Cosmos,
