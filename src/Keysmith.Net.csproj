@@ -11,7 +11,7 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Company>Farsight CDA Crypto Development &amp; Analytics UG</Company>
 		<Authors>Playwo</Authors>
-		<Description>Highly optimized implementations of BIP32, BIP39 and BIP44</Description>
+		<Description>Highly optimized implementations of common blockchain cryptography like BIP32, BIP39 and BIP44</Description>
 		<PackageIcon>logo.jpg</PackageIcon>
 		<RepositoryUrl>https://github.com/farsight-CDA/Keysmith.Net</RepositoryUrl>
 		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
