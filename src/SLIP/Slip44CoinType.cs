@@ -2,7 +2,7 @@
 /// <summary>
 /// Coin types registered in the Slip44 standard defined here <see href="https://github.com/satoshilabs/slips/blob/master/slip-0044.md" />
 /// </summary>
-public enum Slip44CoinType : uint
+public enum Slip44CoinType
 {
     /// <summary>
     /// BTC
