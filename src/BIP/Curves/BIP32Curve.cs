@@ -50,14 +50,14 @@ internal abstract partial class BIP32Curve
             {
                 throw new ArgumentException($"Invalid derivation path. Failed to parse at index {pathIndex}", nameof(path));
             }
-            if(derivStep >= _hardenedOffset)
+            if(derivStep >= BIP32.HardenedOffset)
             {
                 throw new ArgumentException($"Invalid derivation path. Path to large at index {pathIndex}", nameof(path));
             }
 
             if(isHardened)
             {
-                derivStep = derivStep += _hardenedOffset;
+                derivStep = derivStep += BIP32.HardenedOffset;
             }
 
             pathBuffer[pathIndex] = derivStep;
