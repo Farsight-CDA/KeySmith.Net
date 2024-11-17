@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35506.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keysmith.Net", "src\Keysmith.Net.csproj", "{3C4EB392-ECFB-4B9F-A3BC-51C7E7E43B5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keysmith.Net.Tests", "test\Keysmith.Net.Tests.csproj", "{DFB5B610-EAF5-469F-99F4-2AEB73C5AD0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keysmith.Net.Bench", "bench\Keysmith.Net.Bench.csproj", "{4FCDEDFB-CB28-4462-BF82-0B132154B402}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3C4EB392-ECFB-4B9F-A3BC-51C7E7E43B5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C4EB392-ECFB-4B9F-A3BC-51C7E7E43B5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C4EB392-ECFB-4B9F-A3BC-51C7E7E43B5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C4EB392-ECFB-4B9F-A3BC-51C7E7E43B5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFB5B610-EAF5-469F-99F4-2AEB73C5AD0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFB5B610-EAF5-469F-99F4-2AEB73C5AD0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFB5B610-EAF5-469F-99F4-2AEB73C5AD0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFB5B610-EAF5-469F-99F4-2AEB73C5AD0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FCDEDFB-CB28-4462-BF82-0B132154B402}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FCDEDFB-CB28-4462-BF82-0B132154B402}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FCDEDFB-CB28-4462-BF82-0B132154B402}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FCDEDFB-CB28-4462-BF82-0B132154B402}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
