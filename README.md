@@ -1,6 +1,6 @@
 # Keysmith.Net
 
-Modern .NET9 library implementing common cryptographic standards used by various cryptocurrencies like BIP32, BIP39 and BIP44.#
+Modern .NET9 library implementing common cryptographic standards used by various cryptocurrencies like BIP32, BIP39 and BIP44.
 
 The intention of this library is to provide minimal no boilerplate implemenations of these cryptographic primitives while maintaining the best possible performance using the latest language features.
 
