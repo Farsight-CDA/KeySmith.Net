@@ -12,7 +12,7 @@ public class BIP32Benchmarks
     [Benchmark]
     public (byte[], byte[]) Keysmith_Array_BIP32_Ethereum_12_Words()
         => BIP32.DerivePath(
-            BIP32Curves.Secp256k1,
+            BIPCurves.Secp256k1,
             TestData.Seed_12_Words,
             "m/44'/60'/0'/0/0"
         );
@@ -23,7 +23,7 @@ public class BIP32Benchmarks
         Span<uint> path = stackalloc uint[5];
         BIP44.Ethereum(path);
         return BIP32.TryDerivePath(
-            BIP32Curves.Secp256k1,
+            BIPCurves.Secp256k1,
             TestData.Seed_12_Words,
             _keyBuffer,
             _chainCodeBuffer,
@@ -34,7 +34,7 @@ public class BIP32Benchmarks
     [Benchmark]
     public (byte[], byte[]) Keysmith_Array_BIP32_Ethereum_18_Words()
         => BIP32.DerivePath(
-            BIP32Curves.Secp256k1,
+            BIPCurves.Secp256k1,
             TestData.Seed_18_Words,
             "m/44'/60'/0'/0/0"
         );
@@ -45,7 +45,7 @@ public class BIP32Benchmarks
         Span<uint> path = stackalloc uint[5];
         BIP44.Ethereum(path);
         return BIP32.TryDerivePath(
-            BIP32Curves.Secp256k1,
+            BIPCurves.Secp256k1,
             TestData.Seed_18_Words,
             _keyBuffer,
             _chainCodeBuffer,
@@ -56,7 +56,7 @@ public class BIP32Benchmarks
     [Benchmark]
     public (byte[], byte[]) Keysmith_Array_BIP32_Ethereum_24_Words()
         => BIP32.DerivePath(
-            BIP32Curves.Secp256k1,
+            BIPCurves.Secp256k1,
             TestData.Seed_24_Words,
             "m/44'/60'/0'/0/0"
         );
@@ -67,7 +67,7 @@ public class BIP32Benchmarks
         Span<uint> path = stackalloc uint[5];
         BIP44.Ethereum(path);
         return BIP32.TryDerivePath(
-            BIP32Curves.Secp256k1,
+            BIPCurves.Secp256k1,
             TestData.Seed_24_Words,
             _keyBuffer,
             _chainCodeBuffer,

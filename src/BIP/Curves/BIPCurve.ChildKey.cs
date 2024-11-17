@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 
 namespace Keysmith.Net.BIP.Curves;
-internal abstract partial class BIP32Curve
+public abstract partial class BIPCurve
 {
     private void GetChildKeyDerivation(Span<byte> currentKey, Span<byte> currentChainCode, uint index)
     {

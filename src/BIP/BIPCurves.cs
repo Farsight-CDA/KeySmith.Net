@@ -2,7 +2,7 @@
 /// <summary>
 /// Supported Elliptic Curve Names
 /// </summary>
-public enum BIP32Curves
+public enum BIPCurves
 {
     /// <summary>
     /// <see href="https://neuromancer.sk/std/secg/secp256k1" />

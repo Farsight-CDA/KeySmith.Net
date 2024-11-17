@@ -2,7 +2,7 @@
 using System.Text;
 
 namespace Keysmith.Net.BIP.Curves;
-internal abstract partial class BIP32Curve
+public abstract partial class BIPCurve
 {
     internal void GetMasterKeyFromSeed(ReadOnlySpan<byte> seed, Span<byte> keyDestination, Span<byte> chainCodeDestination)
     {

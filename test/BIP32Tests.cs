@@ -7,7 +7,7 @@ public class BIP32Tests
     public void Should_Derive_Correct_Key()
     {
         var (key, _) = BIP32.DerivePath(
-            BIP32Curves.Secp256k1,
+            BIPCurves.Secp256k1,
             Convert.FromHexString("354C22AEDB9A37407ADC61F657A6F00D10ED125EFA360215F36C6919ABD94D6DBC193A5F9C495E21EE74118661E327E84A5F5F11FA373EC33B80897D4697557D"),
             $"m/44'/60'/0'/0/0"
         );

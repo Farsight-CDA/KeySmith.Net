@@ -1,13 +1,30 @@
 ﻿using System.Numerics;
 
 namespace Keysmith.Net.BIP.Curves;
-internal abstract partial class BIP32Curve
+/// <summary>
+/// Represents an elliptic curve to be used for various BIP standards.
+/// </summary>
+public abstract partial class BIPCurve
 {
-    protected abstract string Name { get; }
-    protected abstract BigInteger N { get; }
-    protected abstract ReadOnlySpan<byte> NBytes { get; }
+    /// <summary>
+    /// Name of the curve for BIP39.
+    /// </summary>
+    public abstract string Name { get; }
+    /// <summary>
+    /// N value of the elliptic curve.
+    /// </summary>
+    public abstract BigInteger N { get; }
+    /// <summary>
+    /// Bytes of the N value of the elliptic curve.
+    /// </summary>
+    public abstract ReadOnlySpan<byte> NBytes { get; }
 
-    protected abstract void SerializedPoint(Span<byte> point, Span<byte> destination);
+    /// <summary>
+    /// Multiplies the given point with the base point of the curve and serializes it into the given destination span.
+    /// </summary>
+    /// <param name="point"></param>
+    /// <param name="destination"></param>
+    public abstract void SerializedPoint(Span<byte> point, Span<byte> destination);
 
     internal void DerivePath(ReadOnlySpan<byte> seed,
         Span<byte> keyDestination, Span<byte> chainCodeDestination,

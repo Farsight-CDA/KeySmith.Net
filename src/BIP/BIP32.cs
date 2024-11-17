@@ -12,8 +12,8 @@ public static class BIP32
     /// </summary>
     public const uint HardenedOffset = 2147483648u;
 
-    private static readonly BIP32Curve _ed25519 = new ED25519();
-    private static readonly BIP32Curve _secp256k1 = new Secp256K1();
+    private static readonly BIPCurve _ed25519 = new ED25519();
+    private static readonly BIPCurve _secp256k1 = new Secp256K1();
 
     /// <summary>
     /// Derives the master private key based on a seed. 
@@ -22,7 +22,7 @@ public static class BIP32
     /// <param name="curve">Elliptic Curve to use</param>
     /// <param name="seed">Seed to base the derivation on</param>
     /// <returns>Tuple of derived master key and the corresponding chain code</returns>
-    public static (byte[] Key, byte[] ChainCode) DeriveMasterKey(BIP32Curves curve, ReadOnlySpan<byte> seed)
+    public static (byte[] Key, byte[] ChainCode) DeriveMasterKey(BIPCurves curve, ReadOnlySpan<byte> seed)
     {
         byte[] key = new byte[32];
         byte[] chainCode = new byte[32];
@@ -39,7 +39,7 @@ public static class BIP32
     /// <param name="keyDestination">Span to write the master key to</param>
     /// <param name="chainCodeDestination">Span to write the chain code to</param>
     /// <returns>True if successful, false if not</returns>
-    public static bool TryGetMasterKeyFromSeed(BIP32Curves curve, ReadOnlySpan<byte> seed, Span<byte> keyDestination, Span<byte> chainCodeDestination)
+    public static bool TryGetMasterKeyFromSeed(BIPCurves curve, ReadOnlySpan<byte> seed, Span<byte> keyDestination, Span<byte> chainCodeDestination)
     {
         if(keyDestination.Length != 32 || chainCodeDestination.Length != 32)
         {
@@ -59,7 +59,7 @@ public static class BIP32
     /// <param name="path">Raw path to use</param>
     /// <returns>Tuple of derived child key and the corresponding chain code</returns>
     /// <exception cref="ArgumentException"></exception>
-    public static (byte[], byte[]) DerivePath(BIP32Curves curve, ReadOnlySpan<byte> seed, params ReadOnlySpan<uint> path)
+    public static (byte[], byte[]) DerivePath(BIPCurves curve, ReadOnlySpan<byte> seed, params ReadOnlySpan<uint> path)
     {
         if(path.Length == 0)
         {
@@ -82,7 +82,7 @@ public static class BIP32
     /// <param name="chainCodeDestination">Span to write the chain code to</param>
     /// <param name="path">Raw path to use</param>
     /// <returns></returns>
-    public static bool TryDerivePath(BIP32Curves curve, ReadOnlySpan<byte> seed,
+    public static bool TryDerivePath(BIPCurves curve, ReadOnlySpan<byte> seed,
         Span<byte> keyDestination, Span<byte> chainCodeDestination, params ReadOnlySpan<uint> path)
     {
         if(keyDestination.Length != 32 || chainCodeDestination.Length != 32)
@@ -103,7 +103,7 @@ public static class BIP32
     /// <param name="path">BIP44 spec derivation path</param>
     /// <returns>Tuple of derived child key and the corresponding chain code</returns>
     /// <exception cref="ArgumentException"></exception>
-    public static (byte[], byte[]) DerivePath(BIP32Curves curve, ReadOnlySpan<byte> seed, string path)
+    public static (byte[], byte[]) DerivePath(BIPCurves curve, ReadOnlySpan<byte> seed, string path)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(path, nameof(path));
 
@@ -123,7 +123,7 @@ public static class BIP32
     /// <param name="chainCodeDestination">Span to write the chain code to</param>
     /// <param name="path">BIP44 spec derivation path</param>
     /// <returns></returns>
-    public static bool TryDerivePath(BIP32Curves curve, ReadOnlySpan<byte> seed,
+    public static bool TryDerivePath(BIPCurves curve, ReadOnlySpan<byte> seed,
         Span<byte> keyDestination, Span<byte> chainCodeDestination,
         string path)
     {
@@ -138,11 +138,11 @@ public static class BIP32
         return true;
     }
 
-    private static BIP32Curve GetCurveFromEnum(BIP32Curves curve)
+    private static BIPCurve GetCurveFromEnum(BIPCurves curve)
         => curve switch
         {
-            BIP32Curves.Secp256k1 => _secp256k1,
-            BIP32Curves.ED25519 => _ed25519,
+            BIPCurves.Secp256k1 => _secp256k1,
+            BIPCurves.ED25519 => _ed25519,
             _ => throw new NotSupportedException($"Curve {curve} is not supported")
         };
 }
