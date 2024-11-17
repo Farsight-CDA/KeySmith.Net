@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Running;
 using Keysmith.Net.Bench;
+using System.Reflection;
 
-BenchmarkRunner.Run<BIPBenchmarks>();
+BenchmarkRunner.Run(Assembly.GetExecutingAssembly());
