@@ -4,14 +4,12 @@ using System.Security.Cryptography;
 namespace Keysmith.Net.BIP.Curves;
 internal abstract partial class BIP32Curve
 {
-    private const uint _hardenedOffset = 2147483648u;
-
     private void GetChildKeyDerivation(Span<byte> currentKey, Span<byte> currentChainCode, uint index)
     {
         Span<byte> dataBuffer = stackalloc byte[currentKey.Length + 5];
         Span<byte> digest = stackalloc byte[64];
 
-        if(index < _hardenedOffset)
+        if(index < BIP32.HardenedOffset)
         {
             SerializedPoint(currentKey, dataBuffer[..^4]);
         }

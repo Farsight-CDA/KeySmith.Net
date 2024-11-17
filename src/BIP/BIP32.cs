@@ -7,6 +7,11 @@ namespace Keysmith.Net.BIP;
 /// </summary>
 public static class BIP32
 {
+    /// <summary>
+    /// Offset above which elements in a derivation path are considered hardened.
+    /// </summary>
+    public const uint HardenedOffset = 2147483648u;
+
     private static readonly BIP32Curve _ed25519 = new ED25519();
     private static readonly BIP32Curve _secp256k1 = new Secp256K1();
 
