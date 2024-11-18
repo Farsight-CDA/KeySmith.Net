@@ -16,9 +16,12 @@ Installing a curve package will provide a singleton instance of that specific cu
 
 #### `Keysmith.Net.Secp256k1`
 
-Support for the Secp256k1 curve.
-Requires the secp256k1 c library in the same directory as your binary to work.
+Requires the [secp256k1 c library](https://github.com/bitcoin-core/secp256k1) in the same directory as your binary to work.
 Consider building it from source or installing the `Secp256k1.Native` package which bundles it for you.
+
+#### `Keysmith.Net.ED25519`
+
+Uses [NSec](https://nsec.rocks/) behind the scenes for curve math which is also MIT licensed.
 
 ## Features
 

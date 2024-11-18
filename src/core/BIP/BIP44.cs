@@ -42,13 +42,34 @@ public static class BIP44
     /// </summary>
     /// <param name="destination"></param>
     /// <param name="accountIndex"></param>
-    public static void Cosmos(Span<uint> destination, uint accountIndex)
+    public static void Cosmos(Span<uint> destination, uint accountIndex = 0)
         => WriteInto(destination,
             Slip10.HardenedOffset + 44,
             Slip10.HardenedOffset + (uint) Slip44CoinType.Cosmos,
             Slip10.HardenedOffset + 0,
             0,
             accountIndex
+        );
+
+    /// <summary>
+    /// Constructs a derivation path typically used by Cosmos chains.
+    /// </summary>
+    /// <param name="accountIndex"></param>
+    /// <returns></returns>
+    public static string Solana(int accountIndex = 0)
+        => $"m/44'/{(int) Slip44CoinType.Solana}'/{accountIndex}'/0'";
+
+    /// <summary>
+    /// Constructs a derivation path typically used by Cosmos chains and writes it to a provided span.
+    /// </summary>
+    /// <param name="destination"></param>
+    /// <param name="accountIndex"></param>
+    public static void Solana(Span<uint> destination, uint accountIndex = 0)
+        => WriteInto(destination,
+            Slip10.HardenedOffset + 44,
+            Slip10.HardenedOffset + (uint) Slip44CoinType.Solana,
+            Slip10.HardenedOffset + accountIndex,
+            Slip10.HardenedOffset + 0
         );
 
     private static void WriteInto(Span<uint> destination, params Span<uint> values)
