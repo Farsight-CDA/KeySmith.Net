@@ -1,4 +1,5 @@
 ﻿using Keysmith.Net.SLIP;
+using System.Linq;
 
 namespace Keysmith.Net.EC;
 /// <summary>
@@ -28,27 +29,33 @@ public abstract class Slip10Curve
 
     internal void DerivePath(ReadOnlySpan<byte> seed,
         Span<byte> keyDestination, Span<byte> chainCodeDestination,
-        string path)
+        ReadOnlySpan<char> path)
     {
-        if(path.Length < 2 || path[0] != 'm' || path[1] != '/')
+        if(path.Length == 0 || path[0] != 'm')
+        {
+            throw new ArgumentException("Invalid derivation path", nameof(path));
+        }
+        if(path.Length > 1 && path[1] != '/')
         {
             throw new ArgumentException("Invalid derivation path", nameof(path));
         }
 
-        var valuePath = path[2..].AsSpan();
-        int pathLength = valuePath.Count('/') + 1;
-
-        if(pathLength == 0)
-        {
-            throw new ArgumentException("Invalid derivation path", nameof(path));
-        }
+        int pathLength = path.Count('/');
+        var subPath = path[1..];
 
         Span<uint> pathBuffer = stackalloc uint[pathLength];
 
-        int pathIndex = 0;
-        foreach(var range in valuePath.Split('/'))
+        int pathIndex = -1;
+        foreach(var range in subPath.Split('/'))
         {
-            var segment = valuePath[range];
+            var segment = subPath[range];
+
+            if(segment.Length == 0 && pathIndex == -1)
+            {
+                pathIndex = 0;
+                continue;
+            }
+
             bool isHardened = segment[^1] == '\'' || segment[^1] == 'h';
 
             if(!uint.TryParse(isHardened ? segment[..^1] : segment, out uint derivStep))
