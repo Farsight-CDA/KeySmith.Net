@@ -20,7 +20,7 @@ public class Slip10Benchmarks
         );
 
     [Benchmark]
-    public bool Keysmith_Span_BIP32_Ethereum_512B()
+    public bool Keysmith_Span_Slip10_Ethereum_512B()
     {
         Span<uint> path = stackalloc uint[5];
         BIP44.Ethereum(path);
