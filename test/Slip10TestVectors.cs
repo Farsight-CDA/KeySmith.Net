@@ -146,6 +146,48 @@ public class Slip10TestVectors
             "68789923a0cac2cd5a29172a475fe9e0fb14cd6adb5ad98a3fa70333e7afa230",
             "8f94d394a8e8fd6b1bc2f3f49f5c47e385281d5c17e65324b0f62483e37e8793",
             "3c24da049451555d51a7014a37337aa4e12d41e485abccfa46b47dfb2af54b7a"
+        ),
+        new Slip10TestVector(
+            _seed2,
+            "m",
+            "ef70a74db9c3a5af931b5fe73ed8e1a53464133654fd55e7a66f8570b8e33c3b",
+            "171cb88b1b3c1db25add599712e36245d75bc65a1a5c9e18d76f9f2b1eab4012",
+            "8fe9693f8fa62a4305a140b9764c5ee01e455963744fe18204b4fb948249308a"
+        ),
+        new Slip10TestVector(
+            _seed2,
+            "m/0'",
+            "0b78a3226f915c082bf118f83618a618ab6dec793752624cbeb622acb562862d",
+            "1559eb2bbec5790b0c65d8693e4d0875b1747f4970ae8b650486ed7470845635",
+            "86fab68dcb57aa196c77c5f264f215a112c22a912c10d123b0d03c3c28ef1037"
+        ),
+        new Slip10TestVector(
+            _seed2,
+            "m/0'/2147483647'",
+            "138f0b2551bcafeca6ff2aa88ba8ed0ed8de070841f0c4ef0165df8181eaad7f",
+            "ea4f5bfe8694d8bb74b7b59404632fd5968b774ed545e810de9c32a4fb4192f4",
+            "5ba3b9ac6e90e83effcd25ac4e58a1365a9e35a3d3ae5eb07b9e4d90bcf7506d"
+        ),
+        new Slip10TestVector(
+            _seed2,
+            "m/0'/2147483647'/1'",
+            "73bd9fff1cfbde33a1b846c27085f711c0fe2d66fd32e139d3ebc28e5a4a6b90",
+            "3757c7577170179c7868353ada796c839135b3d30554bbb74a4b1e4a5a58505c",
+            "2e66aa57069c86cc18249aecf5cb5a9cebbfd6fadeab056254763874a9352b45"
+        ),
+        new Slip10TestVector(
+            _seed2,
+            "m/0'/2147483647'/1'/2147483646'",
+            "0902fe8a29f9140480a00ef244bd183e8a13288e4412d8389d140aac1794825a",
+            "5837736c89570de861ebc173b1086da4f505d4adb387c6a1b1342d5e4ac9ec72",
+            "e33c0f7d81d843c572275f287498e8d408654fdf0d1e065b84e2e6f157aab09b"
+        ),
+        new Slip10TestVector(
+            _seed2,
+            "m/0'/2147483647'/1'/2147483646'/2'",
+            "5d70af781f3a37b829f0d060924d5e960bdc02e85423494afc0b1a41bbe196d4",
+            "551d333177df541ad876a60ea71f00447931c0a9da16f227c11ea080d7391b8d",
+            "47150c75db263559a70d5778bf36abbab30fb061ad69f69ece61a72b0cfa4fc0"
         )
     ];
 }
