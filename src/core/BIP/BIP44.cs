@@ -22,9 +22,9 @@ public static class BIP44
     /// <param name="accountIndex"></param>
     public static void Ethereum(Span<uint> destination, uint accountIndex = 0)
         => WriteInto(destination,
-            BIP32.HardenedOffset + 44,
-            BIP32.HardenedOffset + (uint) Slip44CoinType.Ethereum,
-            BIP32.HardenedOffset + 0,
+            Slip10.HardenedOffset + 44,
+            Slip10.HardenedOffset + (uint) Slip44CoinType.Ethereum,
+            Slip10.HardenedOffset + 0,
             0,
             accountIndex
         );
@@ -44,9 +44,9 @@ public static class BIP44
     /// <param name="accountIndex"></param>
     public static void Cosmos(Span<uint> destination, uint accountIndex)
         => WriteInto(destination,
-            BIP32.HardenedOffset + 44,
-            BIP32.HardenedOffset + (uint) Slip44CoinType.Cosmos,
-            BIP32.HardenedOffset + 0,
+            Slip10.HardenedOffset + 44,
+            Slip10.HardenedOffset + (uint) Slip44CoinType.Cosmos,
+            Slip10.HardenedOffset + 0,
             0,
             accountIndex
         );

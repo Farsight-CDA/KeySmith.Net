@@ -31,7 +31,7 @@ Takes the seed calculated using BIP39 and derives the master private key and chi
 #### Usage
 ```cs
 (byte[] key, byte[] chainCode) = BIP32.DerivePath(
-    BIPCurves.Secp256k1,
+    ECCurves.Secp256k1,
     TestData.Seed_6_Words,
     "m/44'/60'/0'/0/0"
 );
@@ -41,7 +41,7 @@ Span<byte> chainCode = stackalloc byte[32];
 Span<uint> path = stackalloc uint[5];
 BIP44.Ethereum(path);
 BIP32.TryDerivePath(
-    BIPCurves.Secp256k1,
+    ECCurves.Secp256k1,
     seed,
     key,
     chainCode,

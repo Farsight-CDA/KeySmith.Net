@@ -20,16 +20,16 @@ jobs:
           dotnet-version: "9.x"
 
       - name: Restore dependencies
-        run: dotnet restore ./src
+        run: dotnet restore
 
       - name: Run Tests
         run: dotnet test
 
       - name: Build the project
-        run: dotnet build ./src --configuration Release --no-restore
+        run: dotnet build --configuration Release --no-restore
 
       - name: Pack the project
-        run: dotnet pack ./src --configuration Release --no-build --output ./nupkgs
+        run: dotnet pack --configuration Release --no-build --output ./nupkgs
 
       - name: Publish to NuGet
         env:

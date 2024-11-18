@@ -1,17 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+	<Import Project="..\..\..\version.props" />
+
 	<PropertyGroup>
-		<AssemblyVersion>0.2.1</AssemblyVersion>
 		<FileVersion>$(AssemblyVersion)</FileVersion>
 		<Version>$(AssemblyVersion)</Version>
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Title>Keysmith.Net</Title>
+		<Title>Keysmith.Net.Secp256k1</Title>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Company>Farsight CDA Crypto Development &amp; Analytics UG</Company>
 		<Authors>Playwo</Authors>
-		<Description>Highly optimized implementations of common blockchain cryptography like BIP32, BIP39 and BIP44</Description>
+		<Description>Secp256k1 implementation for Keysmith.Net</Description>
 		<PackageIcon>logo.jpg</PackageIcon>
 		<RepositoryUrl>https://github.com/farsight-CDA/Keysmith.Net</RepositoryUrl>
 		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
@@ -20,28 +21,33 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<PackageTags>BIP32;BIP39;BIP44;Wallet;Bitcoin;Ethereum</PackageTags>
+		<PackageTags>Secp256k1;BIP32;BIP39;BIP44;Wallet;Bitcoin;Ethereum;Solana;Cardano</PackageTags>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RootNamespace>Keysmith.Net</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="..\img\logo.jpg">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-		<None Include="..\LICENSE">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-		<None Include="..\README.md">
-		  <Pack>True</Pack>
-		  <PackagePath>\</PackagePath>
-		</None>
+		<ProjectReference Include="..\..\core\Keysmith.Net.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Secp256k1.Net" Version="1.2.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\img\logo.jpg">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
 	</ItemGroup>
 
 </Project>

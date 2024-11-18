@@ -1,30 +1,18 @@
-﻿using System.Numerics;
+﻿using Keysmith.Net.SLIP;
 
-namespace Keysmith.Net.BIP.Curves;
+namespace Keysmith.Net.EC;
 /// <summary>
-/// Represents an elliptic curve to be used for various BIP standards.
+/// Represents a curve that is supported by the Slip10 standard.
 /// </summary>
-public abstract partial class BIPCurve
+public abstract class Slip10Curve
 {
     /// <summary>
-    /// Name of the curve for BIP39.
+    /// Ascii encoded bytes of the elliptic curve name to be used for master key derivation.
     /// </summary>
-    public abstract string Name { get; }
-    /// <summary>
-    /// N value of the elliptic curve.
-    /// </summary>
-    public abstract BigInteger N { get; }
-    /// <summary>
-    /// Bytes of the N value of the elliptic curve.
-    /// </summary>
-    public abstract ReadOnlySpan<byte> NBytes { get; }
+    protected abstract ReadOnlySpan<byte> NameBytes { get; }
 
-    /// <summary>
-    /// Multiplies the given point with the base point of the curve and serializes it into the given destination span.
-    /// </summary>
-    /// <param name="point"></param>
-    /// <param name="destination"></param>
-    public abstract void SerializedPoint(Span<byte> point, Span<byte> destination);
+    internal abstract void GetMasterKeyFromSeed(ReadOnlySpan<byte> seed, Span<byte> keyDestination, Span<byte> chainCodeDestination);
+    internal abstract void GetChildKeyDerivation(Span<byte> currentKey, Span<byte> currentChainCode, uint index);
 
     internal void DerivePath(ReadOnlySpan<byte> seed,
         Span<byte> keyDestination, Span<byte> chainCodeDestination,
@@ -67,14 +55,14 @@ public abstract partial class BIPCurve
             {
                 throw new ArgumentException($"Invalid derivation path. Failed to parse at index {pathIndex}", nameof(path));
             }
-            if(derivStep >= BIP32.HardenedOffset)
+            if(derivStep >= Slip10.HardenedOffset)
             {
                 throw new ArgumentException($"Invalid derivation path. Path to large at index {pathIndex}", nameof(path));
             }
 
             if(isHardened)
             {
-                derivStep = derivStep += BIP32.HardenedOffset;
+                derivStep = derivStep += Slip10.HardenedOffset;
             }
 
             pathBuffer[pathIndex] = derivStep;
@@ -82,31 +70,5 @@ public abstract partial class BIPCurve
         }
 
         DerivePath(seed, keyDestination, chainCodeDestination, pathBuffer);
-    }
-
-    private bool IsValidKey(ReadOnlySpan<byte> key)
-    {
-        if(key.Length != NBytes.Length)
-        {
-            return false;
-        }
-        if(key.IndexOfAnyExcept((byte) 0) == -1)
-        {
-            return false;
-        }
-
-        for(int i = 0; i < key.Length; i++)
-        {
-            if(NBytes[i] > key[i])
-            {
-                return true;
-            }
-            else if(key[i] > NBytes[i])
-            {
-                return false;
-            }
-        }
-
-        return false;
     }
 }

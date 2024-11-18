@@ -16,7 +16,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\src\Keysmith.Net.csproj" />
+		<ProjectReference Include="..\src\curves\secp256k1\Keysmith.Net.Secp256k1.csproj" />
+		<ProjectReference Include="..\src\core\Keysmith.Net.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
