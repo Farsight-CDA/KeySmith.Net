@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace Keysmith.Net.EC;
 /// <summary>
@@ -16,6 +17,8 @@ public sealed class Secp256k1 : ECCurve
     private static readonly BigInteger _n = new BigInteger(_nBytes, true, true);
 
     /// <inheritdoc/>
+    public override int PublicKeyLength => 33;
+    /// <inheritdoc/>
     public override BigInteger N => _n;
     /// <inheritdoc/>
     public override ReadOnlySpan<byte> NBytes => _nBytes;
@@ -25,11 +28,13 @@ public sealed class Secp256k1 : ECCurve
     private Secp256k1() { }
 
     /// <inheritdoc/>
-    public override void MakePublicKey(Span<byte> point, Span<byte> destination)
+    public override void MakePublicKey(ReadOnlySpan<byte> privateKey, Span<byte> destination)
     {
         Span<byte> publicKeyBuffer = stackalloc byte[64];
 
-        if(!_secp256k1.PublicKeyCreate(publicKeyBuffer, point))
+        var mutablePrivateKey = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(privateKey), privateKey.Length);
+
+        if(!_secp256k1.PublicKeyCreate(publicKeyBuffer, mutablePrivateKey))
         {
             throw new InvalidOperationException();
         }
