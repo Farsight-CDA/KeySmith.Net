@@ -19,13 +19,6 @@ public abstract class ECCurve : Slip10Curve
     public abstract ReadOnlySpan<byte> NBytes { get; }
 
     /// <summary>
-    /// Multiplies the given point with the base point of the curve and serializes it into the given destination span.
-    /// </summary>
-    /// <param name="point"></param>
-    /// <param name="destination"></param>
-    public abstract void SerializedPoint(Span<byte> point, Span<byte> destination);
-
-    /// <summary>
     /// Validates if the given key is valid for this ECCurve.
     /// </summary>
     /// <param name="key"></param>
@@ -88,7 +81,7 @@ public abstract class ECCurve : Slip10Curve
 
         if(index < Slip10.HardenedOffset)
         {
-            SerializedPoint(currentKey, dataBuffer[..^4]);
+            MakePublicKey(currentKey, dataBuffer[..^4]);
         }
         else
         {

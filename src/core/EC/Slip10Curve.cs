@@ -12,6 +12,13 @@ public abstract class Slip10Curve
     /// </summary>
     protected abstract ReadOnlySpan<byte> NameBytes { get; }
 
+    /// <summary>
+    /// Creates a public key using the private key on this curve and writes it to a given destination buffer.
+    /// </summary>
+    /// <param name="point"></param>
+    /// <param name="destination"></param>
+    public abstract void MakePublicKey(Span<byte> point, Span<byte> destination);
+
     internal abstract void GetMasterKeyFromSeed(ReadOnlySpan<byte> seed, Span<byte> keyDestination, Span<byte> chainCodeDestination);
     internal abstract void GetChildKeyDerivation(Span<byte> currentKey, Span<byte> currentChainCode, uint index);
 

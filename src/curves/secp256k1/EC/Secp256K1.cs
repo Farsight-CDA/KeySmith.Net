@@ -25,7 +25,7 @@ public sealed class Secp256k1 : ECCurve
     private Secp256k1() { }
 
     /// <inheritdoc/>
-    public override void SerializedPoint(Span<byte> point, Span<byte> destination)
+    public override void MakePublicKey(Span<byte> point, Span<byte> destination)
     {
         Span<byte> publicKeyBuffer = stackalloc byte[64];
 
