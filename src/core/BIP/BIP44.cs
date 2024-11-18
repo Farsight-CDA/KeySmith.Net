@@ -72,6 +72,134 @@ public static class BIP44
             Slip10.HardenedOffset + 0
         );
 
+    /// <summary>
+    /// Gets the number of indexes in the given derivation path.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    public static int GetPathLength(ReadOnlySpan<char> path)
+        => path.Count('/');
+
+    /// <summary>
+    /// Parses the given derivation path into a uint array. Throws if parsing fails.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public static uint[] Parse(ReadOnlySpan<char> path)
+    {
+        if(path.Length == 0 || path[0] != 'm')
+        {
+            throw new ArgumentException("Invalid derivation path", nameof(path));
+        }
+        if(path.Length > 1 && path[1] != '/')
+        {
+            throw new ArgumentException("Invalid derivation path", nameof(path));
+        }
+
+        int pathLength = path.Count('/');
+        var subPath = path[1..];
+
+        uint[] pathBuffer = new uint[pathLength];
+
+        int pathIndex = -1;
+        foreach(var range in subPath.Split('/'))
+        {
+            var segment = subPath[range];
+
+            if(segment.Length == 0 && pathIndex == -1)
+            {
+                pathIndex = 0;
+                continue;
+            }
+
+            bool isHardened = segment[^1] == '\'' || segment[^1] == 'h';
+
+            if(!uint.TryParse(isHardened ? segment[..^1] : segment, out uint derivStep))
+            {
+                throw new ArgumentException($"Invalid derivation path. Failed to parse at index {pathIndex}", nameof(path));
+            }
+            if(derivStep >= Slip10.HardenedOffset)
+            {
+                throw new ArgumentException($"Invalid derivation path. Path to large at index {pathIndex}", nameof(path));
+            }
+
+            if(isHardened)
+            {
+                derivStep = derivStep += Slip10.HardenedOffset;
+            }
+
+            pathBuffer[pathIndex] = derivStep;
+            pathIndex++;
+        }
+
+        return pathBuffer;
+    }
+
+    /// <summary>
+    /// Parses the given derivation path into a given span of uint. Returns false if parsing fails.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="pathDestination"></param>
+    /// <param name="bytesWritten"></param>
+    /// <returns></returns>
+    public static bool TryParse(ReadOnlySpan<char> path, Span<uint> pathDestination, out int bytesWritten)
+    {
+        bytesWritten = 0;
+        if(path.Length == 0 || path[0] != 'm')
+        {
+            return false;
+        }
+        if(path.Length > 1 && path[1] != '/')
+        {
+            return false;
+        }
+
+        int pathLength = path.Count('/');
+
+        if(pathDestination.Length < pathLength)
+        {
+            return false;
+        }
+
+        var subPath = path[1..];
+        Span<uint> pathBuffer = stackalloc uint[pathLength];
+
+        int pathIndex = -1;
+        foreach(var range in subPath.Split('/'))
+        {
+            var segment = subPath[range];
+
+            if(segment.Length == 0 && pathIndex == -1)
+            {
+                continue;
+            }
+
+            bool isHardened = segment[^1] == '\'' || segment[^1] == 'h';
+
+            if(!uint.TryParse(isHardened ? segment[..^1] : segment, out uint derivStep))
+            {
+                return false;
+            }
+            if(derivStep >= Slip10.HardenedOffset)
+            {
+                return false;
+            }
+
+            if(isHardened)
+            {
+                derivStep = derivStep += Slip10.HardenedOffset;
+            }
+
+            pathBuffer[pathIndex] = derivStep;
+            pathIndex++;
+        }
+
+        bytesWritten = pathLength;
+        pathBuffer.CopyTo(pathDestination);
+        return true;
+    }
+
     private static void WriteInto(Span<uint> destination, params Span<uint> values)
     {
         if(values.Length != destination.Length)
