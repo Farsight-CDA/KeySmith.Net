@@ -88,7 +88,7 @@ public abstract class BaseHdWallet
         curve.MakePublicKey(_privateKey, _publicKey);
     }
     ///
-    protected BaseHdWallet(Slip10Curve curve, string mnemonic, string passphrase, ReadOnlySpan<uint> path)
+    protected BaseHdWallet(Slip10Curve curve, string mnemonic, string passphrase, params ReadOnlySpan<uint> path)
     {
         ArgumentNullException.ThrowIfNull(curve, nameof(curve));
         _curve = curve;
