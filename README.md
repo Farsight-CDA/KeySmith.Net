@@ -1,16 +1,36 @@
 # Keysmith.Net
 
-Modern .NET9 library implementing common cryptographic standards used by various cryptocurrencies like BIP32, BIP39 and BIP44.
+Modern .NET9 library implementing common cryptographic standards used by various cryptocurrencies like BIP32/SLIP10, BIP39 and BIP44.
 
 The intention of this library is to provide minimal no boilerplate implemenations of these cryptographic primitives while maintaining the best possible performance using the latest language features.
 
+## Installation
+
+### Base Package: `Keysmith.Net`
+
+The base package is always required.
+
+### Optional curve packages:
+
+Installing a curve package will provide a singleton instance of that specific curve to be used in SLIP10 derivations.
+
+#### `Keysmith.Net.Secp256k1`
+
+Support for the Secp256k1 curve.
+Requires the secp256k1 c library in the same directory as your binary to work.
+Consider building it from source or installing the `Secp256k1.Native` package which bundles it for you.
+
 ## Features
+
 ### BIP39
+
 Converts mnemonic words to the seed used for deriving private keys.
+
 > [!NOTE]  
 > Only supports the english wordlist.
 
 #### Usage
+
 ```cs
 byte[] seed = BIP39.MnemonicToSeed("[mnemonics]");
 //Or using spans
@@ -22,17 +42,16 @@ BIP39.TryMnemonicToSeed(seed, "[mnemonics]")
 
 <img src="./img/bip39_bench.png" />
 
-### BIP32
+### BIP32/SLIP10
+
 Takes the seed calculated using BIP39 and derives the master private key and child keys using BIP44 derivation paths.
 
-> [!NOTE]  
-> Currently only supports Secp256k1.
-
 #### Usage
+
 ```cs
-(byte[] key, byte[] chainCode) = BIP32.DerivePath(
-    ECCurves.Secp256k1,
-    TestData.Seed_6_Words,
+(byte[] key, byte[] chainCode) = Slip10.DerivePath(
+    Secp256k1.Instance,
+    seed,
     "m/44'/60'/0'/0/0"
 );
 //Or using spans
@@ -40,8 +59,8 @@ Span<byte> key = stackalloc byte[32];
 Span<byte> chainCode = stackalloc byte[32];
 Span<uint> path = stackalloc uint[5];
 BIP44.Ethereum(path);
-BIP32.TryDerivePath(
-    ECCurves.Secp256k1,
+Slip10.TryDerivePath(
+    Secp256k1.Instance,
     seed,
     key,
     chainCode,
@@ -51,7 +70,7 @@ BIP32.TryDerivePath(
 
 #### Performance
 
-<img src="./img/bip32_bench.png" />
+<img src="./img/slip10_bench.png" />
 
 ### BIP44
 
