@@ -111,10 +111,9 @@ public static class Slip10
     /// <param name="path">BIP44 spec derivation path</param>
     /// <returns>Tuple of derived child key and the corresponding chain code</returns>
     /// <exception cref="ArgumentException"></exception>
-    public static (byte[], byte[]) DerivePath(Slip10Curve curve, ReadOnlySpan<byte> seed, string path)
+    public static (byte[], byte[]) DerivePath(Slip10Curve curve, ReadOnlySpan<byte> seed, ReadOnlySpan<char> path)
     {
         ArgumentNullException.ThrowIfNull(curve, nameof(curve));
-        ArgumentNullException.ThrowIfNullOrEmpty(path, nameof(path));
 
         byte[] keyBuffer = new byte[32];
         byte[] chainCodeBuffer = new byte[32];
@@ -134,9 +133,9 @@ public static class Slip10
     /// <returns></returns>
     public static bool TryDerivePath(Slip10Curve curve, ReadOnlySpan<byte> seed,
         Span<byte> keyDestination, Span<byte> chainCodeDestination,
-        string path)
+        ReadOnlySpan<char> path)
     {
-        if(curve is null || string.IsNullOrEmpty(path))
+        if(curve is null)
         {
             return false;
         }
