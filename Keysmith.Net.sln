@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Curves", "Curves", "{23781A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keysmith.Net.Secp256k1", "src\curves\secp256k1\Keysmith.Net.Secp256k1.csproj", "{A0665EEB-700F-4F00-AED2-2D452D327D8B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keysmith.Net.ED25519", "src\curves\ed25519\Keysmith.Net.ED25519.csproj", "{F6D83E1F-C150-452B-89F2-713A803DDCCB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,11 +37,16 @@ Global
 		{A0665EEB-700F-4F00-AED2-2D452D327D8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0665EEB-700F-4F00-AED2-2D452D327D8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0665EEB-700F-4F00-AED2-2D452D327D8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6D83E1F-C150-452B-89F2-713A803DDCCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6D83E1F-C150-452B-89F2-713A803DDCCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6D83E1F-C150-452B-89F2-713A803DDCCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6D83E1F-C150-452B-89F2-713A803DDCCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A0665EEB-700F-4F00-AED2-2D452D327D8B} = {23781A23-2163-4FE1-9017-9D20C0D9CE86}
+		{F6D83E1F-C150-452B-89F2-713A803DDCCB} = {23781A23-2163-4FE1-9017-9D20C0D9CE86}
 	EndGlobalSection
 EndGlobal

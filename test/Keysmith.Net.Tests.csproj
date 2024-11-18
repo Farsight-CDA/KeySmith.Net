@@ -13,9 +13,11 @@
 		<PackageReference Include="xunit" Version="2.9.2" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" PrivateAssets="all" />
 		<PackageReference Include="Secp256k1.Native" Version="0.1.24-alpha" />
+		<PackageReference Include="NSec.Cryptography" Version="24.4.0" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\src\curves\ed25519\Keysmith.Net.ED25519.csproj" />
 		<ProjectReference Include="..\src\curves\secp256k1\Keysmith.Net.Secp256k1.csproj" />
 		<ProjectReference Include="..\src\core\Keysmith.Net.csproj" />
 	</ItemGroup>

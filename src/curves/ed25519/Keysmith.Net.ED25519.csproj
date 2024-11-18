@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\..\..\version.props" />
+
+	<PropertyGroup>
+		<FileVersion>$(AssemblyVersion)</FileVersion>
+		<Version>$(AssemblyVersion)</Version>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<Title>Keysmith.Net.ED25519</Title>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Company>Farsight CDA Crypto Development &amp; Analytics UG</Company>
+		<Authors>Playwo</Authors>
+		<Description>ED25519 implementation for Keysmith.Net</Description>
+		<PackageIcon>logo.jpg</PackageIcon>
+		<RepositoryUrl>https://github.com/farsight-CDA/Keysmith.Net</RepositoryUrl>
+		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+		<AnalysisLevel>latest-all</AnalysisLevel>
+		<IncludeSymbols>True</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<PackageTags>ED25519;BIP32;BIP39;BIP44;Wallet;Bitcoin;Ethereum;Solana;Cardano</PackageTags>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RootNamespace>Keysmith.Net</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\core\Keysmith.Net.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="NSec.Cryptography" Version="24.4.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\..\img\logo.jpg">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+</Project>
