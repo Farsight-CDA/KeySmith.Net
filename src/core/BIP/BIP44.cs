@@ -1,4 +1,6 @@
 ﻿using Keysmith.Net.SLIP;
+using System.Globalization;
+using System.Text;
 
 namespace Keysmith.Net.BIP;
 /// <summary>
@@ -71,6 +73,23 @@ public static class BIP44
             Slip10.HardenedOffset + accountIndex,
             Slip10.HardenedOffset + 0
         );
+
+    /// <summary>
+    /// Creates a BIP44 derivation path string given a span of indexes.
+    /// </summary>
+    /// <param name="indexes"></param>
+    /// <returns></returns>
+    public static string MakePath(params ReadOnlySpan<uint> indexes)
+    {
+        var sb = new StringBuilder("m", indexes.Length * 3);
+        foreach(uint index in indexes)
+        {
+            _ = index < Slip10.HardenedOffset
+                ? sb.Append(CultureInfo.InvariantCulture, $"/{index}")
+                : sb.Append(CultureInfo.InvariantCulture, $"/{index - Slip10.HardenedOffset}'");
+        }
+        return sb.ToString();
+    }
 
     /// <summary>
     /// Gets the number of indexes in the given derivation path.
