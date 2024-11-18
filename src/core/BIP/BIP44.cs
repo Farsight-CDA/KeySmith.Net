@@ -137,13 +137,78 @@ public static class BIP44
     }
 
     /// <summary>
+    /// Parses the given derivation path into a uint array. Throws if parsing fails.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="destination"></param>
+    /// <param name="bytesWritten"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public static void Parse(ReadOnlySpan<char> path, Span<uint> destination, out int bytesWritten)
+    {
+        if(path.Length == 0 || path[0] != 'm')
+        {
+            throw new ArgumentException("Invalid derivation path", nameof(path));
+        }
+        if(path.Length > 1 && path[1] != '/')
+        {
+            throw new ArgumentException("Invalid derivation path", nameof(path));
+        }
+
+        int pathLength = path.Count('/');
+
+        if(destination.Length < pathLength)
+        {
+            throw new ArgumentException("Destination too short", nameof(destination));
+        }
+
+        var subPath = path[1..];
+
+        uint[] pathBuffer = new uint[pathLength];
+
+        int pathIndex = -1;
+        foreach(var range in subPath.Split('/'))
+        {
+            var segment = subPath[range];
+
+            if(segment.Length == 0 && pathIndex == -1)
+            {
+                pathIndex = 0;
+                continue;
+            }
+
+            bool isHardened = segment[^1] == '\'' || segment[^1] == 'h';
+
+            if(!uint.TryParse(isHardened ? segment[..^1] : segment, out uint derivStep))
+            {
+                throw new ArgumentException($"Invalid derivation path. Failed to parse at index {pathIndex}", nameof(path));
+            }
+            if(derivStep >= Slip10.HardenedOffset)
+            {
+                throw new ArgumentException($"Invalid derivation path. Path to large at index {pathIndex}", nameof(path));
+            }
+
+            if(isHardened)
+            {
+                derivStep = derivStep += Slip10.HardenedOffset;
+            }
+
+            pathBuffer[pathIndex] = derivStep;
+            pathIndex++;
+        }
+
+        bytesWritten = pathLength;
+        pathBuffer.CopyTo(destination);
+    }
+
+    /// <summary>
     /// Parses the given derivation path into a given span of uint. Returns false if parsing fails.
     /// </summary>
     /// <param name="path"></param>
-    /// <param name="pathDestination"></param>
+    /// <param name="destination"></param>
     /// <param name="bytesWritten"></param>
     /// <returns></returns>
-    public static bool TryParse(ReadOnlySpan<char> path, Span<uint> pathDestination, out int bytesWritten)
+    public static bool TryParse(ReadOnlySpan<char> path, Span<uint> destination, out int bytesWritten)
     {
         bytesWritten = 0;
         if(path.Length == 0 || path[0] != 'm')
@@ -157,7 +222,7 @@ public static class BIP44
 
         int pathLength = path.Count('/');
 
-        if(pathDestination.Length < pathLength)
+        if(destination.Length < pathLength)
         {
             return false;
         }
@@ -196,7 +261,7 @@ public static class BIP44
         }
 
         bytesWritten = pathLength;
-        pathBuffer.CopyTo(pathDestination);
+        pathBuffer.CopyTo(destination);
         return true;
     }
 

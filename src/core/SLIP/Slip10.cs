@@ -1,4 +1,5 @@
-﻿using Keysmith.Net.EC;
+﻿using Keysmith.Net.BIP;
+using Keysmith.Net.EC;
 
 namespace Keysmith.Net.SLIP;
 /// <summary>
@@ -117,7 +118,11 @@ public static class Slip10
 
         byte[] keyBuffer = new byte[32];
         byte[] chainCodeBuffer = new byte[32];
-        curve.DerivePath(seed, keyBuffer, chainCodeBuffer, path);
+
+        Span<uint> pathIndexes = stackalloc uint[BIP44.GetPathLength(path)];
+        BIP44.Parse(path, pathIndexes, out _);
+
+        curve.DerivePath(seed, keyBuffer, chainCodeBuffer, pathIndexes);
         return (keyBuffer, chainCodeBuffer);
     }
 
@@ -144,7 +149,13 @@ public static class Slip10
             return false;
         }
 
-        curve.DerivePath(seed, keyDestination, chainCodeDestination, path);
+        Span<uint> pathIndexes = stackalloc uint[BIP44.GetPathLength(path)];
+        if(!BIP44.TryParse(path, pathIndexes, out _))
+        {
+            return false;
+        }
+
+        curve.DerivePath(seed, keyDestination, chainCodeDestination, pathIndexes);
         return true;
     }
 }
