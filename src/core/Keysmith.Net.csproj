@@ -27,11 +27,11 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <NoWarn>CA2214</NoWarn>
+	  <NoWarn>CA2214;CA1051</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-	  <NoWarn>CA2214</NoWarn>
+	  <NoWarn>CA2214;CA1051</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>

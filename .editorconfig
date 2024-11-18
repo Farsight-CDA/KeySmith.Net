@@ -15,6 +15,16 @@ tab_width = 4
 end_of_line = crlf
 insert_final_newline = false
 
+#### .NET Code Actions ####
+
+# Type members
+dotnet_hide_advanced_members = false
+dotnet_member_insertion_location = with_other_members_of_the_same_kind
+dotnet_property_generation_behavior = prefer_throwing_properties
+
+# Symbol search
+dotnet_search_reference_assemblies = true
+
 #### .NET Coding Conventions ####
 
 # Organize usings
@@ -24,7 +34,7 @@ file_header_template = unset
 
 # this. and Me. preferences
 dotnet_style_qualification_for_event = false:warning
-dotnet_style_qualification_for_field = false:warning
+dotnet_style_qualification_for_field = false
 dotnet_style_qualification_for_method = false:warning
 dotnet_style_qualification_for_property = false:warning
 
@@ -42,6 +52,7 @@ dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity:sug
 dotnet_style_require_accessibility_modifiers = for_non_interface_members
 
 # Expression-level preferences
+dotnet_prefer_system_hash_code = true:warning
 dotnet_style_coalesce_expression = true
 dotnet_style_collection_initializer = true:warning
 dotnet_style_explicit_tuple_names = true:warning
@@ -112,6 +123,7 @@ csharp_style_prefer_readonly_struct_member = true
 # Code-block preferences
 csharp_prefer_braces = true:error
 csharp_prefer_simple_using_statement = true
+csharp_prefer_system_threading_lock = true
 csharp_style_namespace_declarations = file_scoped:warning
 csharp_style_prefer_method_group_conversion = true:suggestion
 csharp_style_prefer_primary_constructors = true
@@ -205,9 +217,9 @@ dotnet_naming_rule.method_should_be_pascal_case.severity = warning
 dotnet_naming_rule.method_should_be_pascal_case.symbols = method
 dotnet_naming_rule.method_should_be_pascal_case.style = pascal_case
 
-dotnet_naming_rule.private_or_internal_field_should_be_begins_with__.severity = warning
-dotnet_naming_rule.private_or_internal_field_should_be_begins_with__.symbols = private_or_internal_field
-dotnet_naming_rule.private_or_internal_field_should_be_begins_with__.style = begins_with__
+dotnet_naming_rule.private_or_protected_or_internal_field_should_be_begins_with__.severity = warning
+dotnet_naming_rule.private_or_protected_or_internal_field_should_be_begins_with__.symbols = private_or_protected_or_internal_field
+dotnet_naming_rule.private_or_protected_or_internal_field_should_be_begins_with__.style = begins_with__
 
 dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = warning
 dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_members
@@ -243,9 +255,9 @@ dotnet_naming_symbols.public_or_protected_field.applicable_kinds = field
 dotnet_naming_symbols.public_or_protected_field.applicable_accessibilities = public, protected
 dotnet_naming_symbols.public_or_protected_field.required_modifiers = 
 
-dotnet_naming_symbols.private_or_internal_field.applicable_kinds = field
-dotnet_naming_symbols.private_or_internal_field.applicable_accessibilities = internal, private, private_protected
-dotnet_naming_symbols.private_or_internal_field.required_modifiers = 
+dotnet_naming_symbols.private_or_protected_or_internal_field.applicable_kinds = field
+dotnet_naming_symbols.private_or_protected_or_internal_field.applicable_accessibilities = internal, private, protected, protected_internal, private_protected
+dotnet_naming_symbols.private_or_protected_or_internal_field.required_modifiers = 
 
 dotnet_naming_symbols.types.applicable_kinds = class, struct, interface, enum
 dotnet_naming_symbols.types.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
