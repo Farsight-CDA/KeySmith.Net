@@ -109,4 +109,33 @@ public abstract class BaseHdWallet
         _publicKey = new byte[_curve.PublicKeyLength];
         curve.MakePublicKey(_privateKey, _publicKey);
     }
+
+    /// <summary>
+    /// Signs the given message and returns the signature as an array.
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public byte[] Sign(ReadOnlySpan<byte> data)
+    {
+        byte[] signature = new byte[_curve.SignatureLength];
+        _curve.Sign(_privateKey, data, signature);
+        return signature;
+    }
+
+    /// <summary>
+    /// Signs the given message and writes it to a given destination span.
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="destination"></param>
+    /// <returns></returns>
+    public bool TrySign(ReadOnlySpan<byte> data, Span<byte> destination)
+    {
+        if(destination.Length != _curve.SignatureLength)
+        {
+            return false;
+        }
+
+        _curve.Sign(_privateKey, data, destination);
+        return true;
+    }
 }

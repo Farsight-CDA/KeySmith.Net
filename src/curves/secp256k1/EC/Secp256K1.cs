@@ -17,7 +17,9 @@ public sealed class Secp256k1 : ECCurve
     private static readonly BigInteger _n = new BigInteger(_nBytes, true, true);
 
     /// <inheritdoc/>
-    public override int PublicKeyLength => 33;
+    public override int PublicKeyLength => Secp256k1Net.Secp256k1.SERIALIZED_COMPRESSED_PUBKEY_LENGTH;
+    /// <inheritdoc/>
+    public override int SignatureLength => Secp256k1Net.Secp256k1.SERIALIZED_SIGNATURE_SIZE;
     /// <inheritdoc/>
     public override BigInteger N => _n;
     /// <inheritdoc/>
@@ -46,5 +48,26 @@ public sealed class Secp256k1 : ECCurve
 
         x.CopyTo(destination[1..]);
         destination[1..].Reverse();
+    }
+
+    /// <inheritdoc/>
+    protected override void SignInner(ReadOnlySpan<byte> privateKey, ReadOnlySpan<byte> data, Span<byte> destination)
+    {
+        var mutablePrivateKey = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(privateKey), privateKey.Length);
+        var mutableData = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(data), data.Length);
+
+        if(!_secp256k1.Sign(destination, mutableData, mutablePrivateKey))
+        {
+            throw new NotSupportedException("Signing with secp256k1 failed");
+        }
+    }
+    /// <inheritdoc/>
+    public override bool Verify(ReadOnlySpan<byte> publicKey, ReadOnlySpan<byte> data, ReadOnlySpan<byte> signature)
+    {
+        var mutablePublicKey = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(publicKey), publicKey.Length);
+        var mutableData = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(data), data.Length);
+        var mutableSignature = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(signature), signature.Length);
+
+        return _secp256k1.Verify(mutableSignature, mutableData, mutablePublicKey);
     }
 }

@@ -15,6 +15,9 @@ public class ED25519 : EDCurve
     /// <inheritdoc />
     public override int PublicKeyLength => SignatureAlgorithm.Ed25519.PublicKeySize;
     /// <inheritdoc />
+    public override int SignatureLength => SignatureAlgorithm.Ed25519.SignatureSize;
+
+    /// <inheritdoc />
     protected override ReadOnlySpan<byte> NameBytes => "ed25519 seed"u8;
     /// <inheritdoc />
     public override void MakePublicKey(ReadOnlySpan<byte> privateKey, Span<byte> destination)
@@ -38,4 +41,36 @@ public class ED25519 : EDCurve
             key?.Dispose();
         }
     }
+
+    /// <inheritdoc />
+    protected override void SignInner(ReadOnlySpan<byte> privateKey, ReadOnlySpan<byte> data, Span<byte> destination)
+    {
+        Key key = null!;
+
+        try
+        {
+            if(!Key.TryImport(SignatureAlgorithm.Ed25519, privateKey, KeyBlobFormat.RawPrivateKey, out key!))
+            {
+                throw new NotSupportedException();
+            }
+
+            SignatureAlgorithm.Ed25519.Sign(key, data, destination);
+        }
+        finally
+        {
+            key?.Dispose();
+        }
+    }
+
+    /// <inheritdoc />
+    public override bool Verify(ReadOnlySpan<byte> publicKey, ReadOnlySpan<byte> data, ReadOnlySpan<byte> signature)
+    {
+        if(!PublicKey.TryImport(SignatureAlgorithm.Ed25519, publicKey, KeyBlobFormat.RawPublicKey, out var key!))
+        {
+            throw new NotSupportedException();
+        }
+        //
+        return SignatureAlgorithm.Ed25519.Verify(key, data, signature);
+    }
+
 }
