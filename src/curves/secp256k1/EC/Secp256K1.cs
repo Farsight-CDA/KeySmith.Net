@@ -115,6 +115,12 @@ public sealed class Secp256k1 : WeierstrassCurve
                 throw new NotSupportedException("Signing with secp256k1 failed");
             }
         }
+
+        if(BitConverter.IsLittleEndian)
+        {
+            destination[..32].Reverse();
+            destination[32..64].Reverse();
+        }
     }
 
     /// <inheritdoc/>
