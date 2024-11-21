@@ -1,8 +1,11 @@
-﻿namespace Keysmith.Net.EC;
+﻿using Keysmith.Net.SLIP;
+using System.Security.Cryptography;
+
+namespace Keysmith.Net.EC;
 /// <summary>
-/// Represents a curve that is supported by the Slip10 standard.
+/// Represents an edwards curve.
 /// </summary>
-public abstract class Slip10Curve
+public abstract class EdwardCurve : ECCurve
 {
     /// <summary>
     /// Gets the number of bytes that makes up a public key on this curve.
@@ -13,11 +16,6 @@ public abstract class Slip10Curve
     /// Gets the number of bytes that makes up a signature on this curve.
     /// </summary>
     public abstract int SignatureLength { get; }
-
-    /// <summary>
-    /// Ascii encoded bytes of the elliptic curve name to be used for master key derivation.
-    /// </summary>
-    protected abstract ReadOnlySpan<byte> NameBytes { get; }
 
     /// <summary>
     /// Creates a public key using the private key on this curve and writes it to a given destination buffer.
@@ -41,29 +39,46 @@ public abstract class Slip10Curve
 
         SignInner(privateKey, data, destination);
     }
-    /// <summary>
-    /// Verify if the given signature is valid on the given data.
-    /// </summary>
-    /// <param name="publicKey"></param>
-    /// <param name="data"></param>
-    /// <param name="signature"></param>
-    public abstract bool Verify(ReadOnlySpan<byte> publicKey, ReadOnlySpan<byte> data, ReadOnlySpan<byte> signature);
-
-    internal abstract void GetMasterKeyFromSeed(ReadOnlySpan<byte> seed, Span<byte> keyDestination, Span<byte> chainCodeDestination);
-    internal abstract void GetChildKeyDerivation(Span<byte> currentKey, Span<byte> currentChainCode, uint index);
 
     ///
     protected abstract void SignInner(ReadOnlySpan<byte> privateKey, ReadOnlySpan<byte> data, Span<byte> destination);
 
-    internal void DerivePath(ReadOnlySpan<byte> seed,
-        Span<byte> keyDestination, Span<byte> chainCodeDestination,
-        params ReadOnlySpan<uint> path)
+    internal override void GetMasterKeyFromSeed(ReadOnlySpan<byte> seed, Span<byte> keyDestination, Span<byte> chainCodeDestination)
     {
-        GetMasterKeyFromSeed(seed, keyDestination, chainCodeDestination);
+        Span<byte> buffer = stackalloc byte[64];
 
-        foreach(uint derivStep in path)
+        _ = HMACSHA512.HashData(NameBytes, seed, buffer);
+
+        var il = buffer[..32];
+        var ir = buffer[32..];
+
+        il.CopyTo(keyDestination);
+        ir.CopyTo(chainCodeDestination);
+    }
+
+    internal override void GetChildKeyDerivation(Span<byte> currentKey, Span<byte> currentChainCode, uint index)
+    {
+        Span<byte> dataBuffer = stackalloc byte[37];
+
+        if(index < Slip10.HardenedOffset)
         {
-            GetChildKeyDerivation(keyDestination, chainCodeDestination, derivStep);
+            throw new NotSupportedException("Edwards curves do not support derivation paths with un-hardened elements");
         }
+        else
+        {
+            currentKey.CopyTo(dataBuffer[1..]);
+        }
+
+        _ = BitConverter.TryWriteBytes(dataBuffer[^4..], index);
+        if(BitConverter.IsLittleEndian)
+        {
+            dataBuffer[^4..].Reverse();
+        }
+
+        Span<byte> digest = stackalloc byte[64];
+        _ = HMACSHA512.HashData(currentChainCode, dataBuffer, digest);
+
+        digest[..32].CopyTo(currentKey);
+        digest[32..].CopyTo(currentChainCode);
     }
 }

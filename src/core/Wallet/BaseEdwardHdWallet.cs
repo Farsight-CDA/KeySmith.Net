@@ -6,10 +6,13 @@ namespace Keysmith.Net.Wallet;
 /// <summary>
 /// Base class containing blockchain agnostic standards to be inherited by chain specific wallets.
 /// </summary>
-public abstract class BaseHdWallet
+public abstract class BaseEdwardHdWallet<TCurve>
+    where TCurve : EdwardCurve
 {
-    private readonly Slip10Curve _curve;
-
+    /// <summary>
+    /// The underlying elliptic curve of the wallet.
+    /// </summary>
+    protected readonly TCurve _curve;
     /// <summary>
     /// Private key of the wallet.
     /// </summary>
@@ -19,22 +22,17 @@ public abstract class BaseHdWallet
     /// </summary>
     protected readonly byte[] _publicKey;
     ///
-    protected BaseHdWallet(Slip10Curve curve, ReadOnlySpan<byte> privateKey)
+    protected BaseEdwardHdWallet(TCurve curve, ReadOnlySpan<byte> privateKey)
     {
         ArgumentNullException.ThrowIfNull(curve, nameof(curve));
         _curve = curve;
-
-        if(_curve is ECCurve eCCurve && !eCCurve.IsValidPrivateKey(privateKey))
-        {
-            throw new ArgumentException("Invalid private key", nameof(privateKey));
-        }
 
         _privateKey = privateKey.ToArray();
         _publicKey = new byte[_curve.PublicKeyLength];
         curve.MakePublicKey(_privateKey, _publicKey);
     }
     ///
-    protected BaseHdWallet(Slip10Curve curve, ReadOnlySpan<byte> seed, ReadOnlySpan<char> path)
+    protected BaseEdwardHdWallet(TCurve curve, ReadOnlySpan<byte> seed, ReadOnlySpan<char> path)
     {
         ArgumentNullException.ThrowIfNull(curve, nameof(curve));
         _curve = curve;
@@ -50,7 +48,7 @@ public abstract class BaseHdWallet
         curve.MakePublicKey(_privateKey, _publicKey);
     }
     ///
-    protected BaseHdWallet(Slip10Curve curve, ReadOnlySpan<byte> seed, params ReadOnlySpan<uint> path)
+    protected BaseEdwardHdWallet(TCurve curve, ReadOnlySpan<byte> seed, params ReadOnlySpan<uint> path)
     {
         ArgumentNullException.ThrowIfNull(curve, nameof(curve));
         _curve = curve;
@@ -66,7 +64,7 @@ public abstract class BaseHdWallet
         curve.MakePublicKey(_privateKey, _publicKey);
     }
     ///
-    protected BaseHdWallet(Slip10Curve curve, string mnemonic, string passphrase, ReadOnlySpan<char> path)
+    protected BaseEdwardHdWallet(TCurve curve, string mnemonic, string passphrase, ReadOnlySpan<char> path)
     {
         ArgumentNullException.ThrowIfNull(curve, nameof(curve));
         _curve = curve;
@@ -88,7 +86,7 @@ public abstract class BaseHdWallet
         curve.MakePublicKey(_privateKey, _publicKey);
     }
     ///
-    protected BaseHdWallet(Slip10Curve curve, string mnemonic, string passphrase, params ReadOnlySpan<uint> path)
+    protected BaseEdwardHdWallet(TCurve curve, string mnemonic, string passphrase, params ReadOnlySpan<uint> path)
     {
         ArgumentNullException.ThrowIfNull(curve, nameof(curve));
         _curve = curve;
@@ -115,7 +113,7 @@ public abstract class BaseHdWallet
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public virtual byte[] Sign(ReadOnlySpan<byte> data)
+    public byte[] Sign(ReadOnlySpan<byte> data)
     {
         byte[] signature = new byte[_curve.SignatureLength];
         _curve.Sign(_privateKey, data, signature);
@@ -128,7 +126,7 @@ public abstract class BaseHdWallet
     /// <param name="data"></param>
     /// <param name="destination"></param>
     /// <returns></returns>
-    public virtual bool TrySign(ReadOnlySpan<byte> data, Span<byte> destination)
+    public bool TrySign(ReadOnlySpan<byte> data, Span<byte> destination)
     {
         if(destination.Length != _curve.SignatureLength)
         {

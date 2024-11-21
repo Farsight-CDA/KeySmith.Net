@@ -15,8 +15,8 @@ public class Slip10Tests
             testVector.DerivationPath
         );
 
-        Span<byte> publicKey = stackalloc byte[Secp256k1.Instance.PublicKeyLength];
-        Secp256k1.Instance.MakePublicKey(privateKey, publicKey);
+        Span<byte> publicKey = stackalloc byte[Secp256k1.Instance.CompressedPublicKeyLength];
+        Secp256k1.Instance.MakeCompressedPublicKey(privateKey, publicKey);
 
         Assert.Equal(
             testVector.ChainCode, chainCode

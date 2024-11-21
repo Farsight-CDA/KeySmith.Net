@@ -20,7 +20,7 @@ public static class Slip10
     /// <param name="curve">Elliptic Curve to use</param>
     /// <param name="seed">Seed to base the derivation on</param>
     /// <returns>Tuple of derived master key and the corresponding chain code</returns>
-    public static (byte[] Key, byte[] ChainCode) DeriveMasterKey(Slip10Curve curve, ReadOnlySpan<byte> seed)
+    public static (byte[] Key, byte[] ChainCode) DeriveMasterKey(ECCurve curve, ReadOnlySpan<byte> seed)
     {
         ArgumentNullException.ThrowIfNull(curve, nameof(curve));
 
@@ -39,7 +39,7 @@ public static class Slip10
     /// <param name="keyDestination">Span to write the master key to</param>
     /// <param name="chainCodeDestination">Span to write the chain code to</param>
     /// <returns>True if successful, false if not</returns>
-    public static bool TryGetMasterKeyFromSeed(Slip10Curve curve, ReadOnlySpan<byte> seed, Span<byte> keyDestination, Span<byte> chainCodeDestination)
+    public static bool TryGetMasterKeyFromSeed(ECCurve curve, ReadOnlySpan<byte> seed, Span<byte> keyDestination, Span<byte> chainCodeDestination)
     {
         if(curve is null)
         {
@@ -63,7 +63,7 @@ public static class Slip10
     /// <param name="path">Raw path to use</param>
     /// <returns>Tuple of derived child key and the corresponding chain code</returns>
     /// <exception cref="ArgumentException"></exception>
-    public static (byte[], byte[]) DerivePath(Slip10Curve curve, ReadOnlySpan<byte> seed, params ReadOnlySpan<uint> path)
+    public static (byte[], byte[]) DerivePath(ECCurve curve, ReadOnlySpan<byte> seed, params ReadOnlySpan<uint> path)
     {
         ArgumentNullException.ThrowIfNull(curve, nameof(curve));
         if(path.Length == 0)
@@ -87,7 +87,7 @@ public static class Slip10
     /// <param name="chainCodeDestination">Span to write the chain code to</param>
     /// <param name="path">Raw path to use</param>
     /// <returns></returns>
-    public static bool TryDerivePath(Slip10Curve curve, ReadOnlySpan<byte> seed,
+    public static bool TryDerivePath(ECCurve curve, ReadOnlySpan<byte> seed,
         Span<byte> keyDestination, Span<byte> chainCodeDestination, params ReadOnlySpan<uint> path)
     {
         if(curve is null)
@@ -112,7 +112,7 @@ public static class Slip10
     /// <param name="path">BIP44 spec derivation path</param>
     /// <returns>Tuple of derived child key and the corresponding chain code</returns>
     /// <exception cref="ArgumentException"></exception>
-    public static (byte[], byte[]) DerivePath(Slip10Curve curve, ReadOnlySpan<byte> seed, ReadOnlySpan<char> path)
+    public static (byte[], byte[]) DerivePath(ECCurve curve, ReadOnlySpan<byte> seed, ReadOnlySpan<char> path)
     {
         ArgumentNullException.ThrowIfNull(curve, nameof(curve));
 
@@ -136,7 +136,7 @@ public static class Slip10
     /// <param name="chainCodeDestination">Span to write the chain code to</param>
     /// <param name="path">BIP44 spec derivation path</param>
     /// <returns></returns>
-    public static bool TryDerivePath(Slip10Curve curve, ReadOnlySpan<byte> seed,
+    public static bool TryDerivePath(ECCurve curve, ReadOnlySpan<byte> seed,
         Span<byte> keyDestination, Span<byte> chainCodeDestination,
         ReadOnlySpan<char> path)
     {

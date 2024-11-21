@@ -5,7 +5,7 @@ namespace Keysmith.Net.ED;
 /// <summary>
 /// <see href="https://neuromancer.sk/std/other/Ed25519" />
 /// </summary>
-public class ED25519 : EDCurve
+public class ED25519 : EdwardCurve
 {
     /// <summary>
     /// Singleton instance of the ED25519 elliptic curve.

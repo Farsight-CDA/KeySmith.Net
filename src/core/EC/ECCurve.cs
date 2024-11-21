@@ -1,124 +1,34 @@
-﻿using Keysmith.Net.SLIP;
-using System.Numerics;
-using System.Security.Cryptography;
-
-namespace Keysmith.Net.EC;
+﻿namespace Keysmith.Net.EC;
 /// <summary>
-/// Represents an elliptic curve.
+/// Represents a curve that is supported by the Slip10 standard.
 /// </summary>
-public abstract class ECCurve : Slip10Curve
+public abstract class ECCurve
 {
     /// <summary>
-    /// The N parameter of the ECCurve.
+    /// Ascii encoded bytes of the elliptic curve name to be used for master key derivation.
     /// </summary>
-    public abstract BigInteger N { get; }
+    protected abstract ReadOnlySpan<byte> NameBytes { get; }
 
     /// <summary>
-    /// The big-endian encoded bytes of the N parameter of the ECCurve.
+    /// Verify if the given signature is valid on the given data.
     /// </summary>
-    public abstract ReadOnlySpan<byte> NBytes { get; }
+    /// <param name="publicKey"></param>
+    /// <param name="data"></param>
+    /// <param name="signature"></param>
+    public abstract bool Verify(ReadOnlySpan<byte> publicKey, ReadOnlySpan<byte> data, ReadOnlySpan<byte> signature);
 
-    /// <summary>
-    /// Validates if the given key is valid for this ECCurve.
-    /// </summary>
-    /// <param name="key"></param>
-    /// <returns></returns>
-    public bool IsValidPrivateKey(BigInteger key)
-        => key < N && key != 0;
+    internal abstract void GetMasterKeyFromSeed(ReadOnlySpan<byte> seed, Span<byte> keyDestination, Span<byte> chainCodeDestination);
+    internal abstract void GetChildKeyDerivation(Span<byte> currentKey, Span<byte> currentChainCode, uint index);
 
-    /// <summary>
-    /// Validates if the given key is valid for this ECCurve.
-    /// </summary>
-    /// <param name="key"></param>
-    /// <returns></returns>
-    public bool IsValidPrivateKey(ReadOnlySpan<byte> key)
+    internal void DerivePath(ReadOnlySpan<byte> seed,
+        Span<byte> keyDestination, Span<byte> chainCodeDestination,
+        params ReadOnlySpan<uint> path)
     {
-        if(key.Length != NBytes.Length)
+        GetMasterKeyFromSeed(seed, keyDestination, chainCodeDestination);
+
+        foreach(uint derivStep in path)
         {
-            return false;
+            GetChildKeyDerivation(keyDestination, chainCodeDestination, derivStep);
         }
-        if(key.IndexOfAnyExcept((byte) 0) == -1)
-        {
-            return false;
-        }
-
-        for(int i = 0; i < key.Length; i++)
-        {
-            if(NBytes[i] > key[i])
-            {
-                return true;
-            }
-            else if(key[i] > NBytes[i])
-            {
-                return false;
-            }
-        }
-
-        return false;
-    }
-
-    internal override void GetMasterKeyFromSeed(ReadOnlySpan<byte> seed, Span<byte> keyDestination, Span<byte> chainCodeDestination)
-    {
-        Span<byte> buffer = stackalloc byte[64];
-
-        _ = HMACSHA512.HashData(NameBytes, seed, buffer);
-
-        var il = buffer[..32];
-        var ir = buffer[32..];
-
-        if(!IsValidPrivateKey(il))
-        {
-            GetMasterKeyFromSeed(buffer, il, ir);
-        }
-
-        il.CopyTo(keyDestination);
-        ir.CopyTo(chainCodeDestination);
-    }
-
-    internal override void GetChildKeyDerivation(Span<byte> currentKey, Span<byte> currentChainCode, uint index)
-    {
-        Span<byte> dataBuffer = stackalloc byte[37];
-
-        if(index < Slip10.HardenedOffset)
-        {
-            MakePublicKey(currentKey, dataBuffer[..^4]);
-        }
-        else
-        {
-            currentKey.CopyTo(dataBuffer[1..]);
-        }
-
-        _ = BitConverter.TryWriteBytes(dataBuffer[^4..], index);
-        if(BitConverter.IsLittleEndian)
-        {
-            dataBuffer[^4..].Reverse();
-        }
-
-        var currentKeyNum = new BigInteger(currentKey, isUnsigned: true, isBigEndian: true);
-        BigInteger newKeyNum = 0;
-
-        Span<byte> digest = stackalloc byte[64];
-
-        var il = digest[..32];
-        var newChainCode = digest[32..];
-
-        while(true)
-        {
-            _ = HMACSHA512.HashData(currentChainCode, dataBuffer, digest);
-
-            var ilNum = new BigInteger(il, isUnsigned: true, isBigEndian: true);
-            newKeyNum = (ilNum + currentKeyNum) % N;
-
-            if(IsValidPrivateKey(newKeyNum))
-            {
-                break;
-            }
-
-            dataBuffer[0] = 1;
-            newChainCode.CopyTo(dataBuffer[1..]);
-        }
-
-        _ = newKeyNum.TryWriteBytes(currentKey, out _, isUnsigned: true, isBigEndian: true);
-        newChainCode.CopyTo(currentChainCode);
     }
 }

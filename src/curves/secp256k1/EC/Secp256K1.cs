@@ -5,7 +5,7 @@ namespace Keysmith.Net.EC;
 /// <summary>
 /// <see href="https://neuromancer.sk/std/secg/secp256k1" />
 /// </summary>
-public sealed class Secp256k1 : ECCurve
+public sealed class Secp256k1 : WeierstrassCurve
 {
     /// <summary>
     /// Singleton instance of the Secp256k1 elliptic curve.
@@ -17,9 +17,14 @@ public sealed class Secp256k1 : ECCurve
     private static readonly BigInteger _n = new BigInteger(_nBytes, true, true);
 
     /// <inheritdoc/>
-    public override int PublicKeyLength => Secp256k1Net.Secp256k1.SERIALIZED_COMPRESSED_PUBKEY_LENGTH;
+    public override int UncompressedPublicKeyLength => Secp256k1Net.Secp256k1.PUBKEY_LENGTH;
     /// <inheritdoc/>
-    public override int SignatureLength => Secp256k1Net.Secp256k1.SERIALIZED_SIGNATURE_SIZE;
+    public override int CompressedPublicKeyLength => Secp256k1Net.Secp256k1.SERIALIZED_COMPRESSED_PUBKEY_LENGTH;
+    /// <inheritdoc/>
+    public override int NonRecoverableSignatureLength => Secp256k1Net.Secp256k1.SERIALIZED_SIGNATURE_SIZE;
+    /// <inheritdoc/>
+    public override int RecoverableSignatureLength => Secp256k1Net.Secp256k1.UNSERIALIZED_SIGNATURE_SIZE;
+
     /// <inheritdoc/>
     public override BigInteger N => _n;
     /// <inheritdoc/>
@@ -28,18 +33,16 @@ public sealed class Secp256k1 : ECCurve
     protected override ReadOnlySpan<byte> NameBytes => "Bitcoin seed"u8;
 
     private Secp256k1() { }
-
     /// <inheritdoc/>
-    public override void MakePublicKey(ReadOnlySpan<byte> privateKey, Span<byte> destination)
+    public override void MakeCompressedPublicKey(ReadOnlySpan<byte> privateKey, Span<byte> destination)
     {
-        Span<byte> publicKeyBuffer = stackalloc byte[64];
-
-        var mutablePrivateKey = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(privateKey), privateKey.Length);
-
-        if(!_secp256k1.PublicKeyCreate(publicKeyBuffer, mutablePrivateKey))
+        if(destination.Length != CompressedPublicKeyLength)
         {
-            throw new InvalidOperationException();
+            throw new ArgumentException($"Invalid destination length, has to be {CompressedPublicKeyLength} bytes", nameof(destination));
         }
+
+        Span<byte> publicKeyBuffer = stackalloc byte[64];
+        MakeUncompressedPublicKey(privateKey, publicKeyBuffer);
 
         var x = publicKeyBuffer[..32];
         var y = publicKeyBuffer[32..];
@@ -49,16 +52,14 @@ public sealed class Secp256k1 : ECCurve
         x.CopyTo(destination[1..]);
         destination[1..].Reverse();
     }
-
     /// <inheritdoc/>
-    protected override void SignInner(ReadOnlySpan<byte> privateKey, ReadOnlySpan<byte> data, Span<byte> destination)
+    public override void MakeUncompressedPublicKey(ReadOnlySpan<byte> privateKey, Span<byte> destination)
     {
         var mutablePrivateKey = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(privateKey), privateKey.Length);
-        var mutableData = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(data), data.Length);
 
-        if(!_secp256k1.Sign(destination, mutableData, mutablePrivateKey))
+        if(!_secp256k1.PublicKeyCreate(destination, mutablePrivateKey))
         {
-            throw new NotSupportedException("Signing with secp256k1 failed");
+            throw new InvalidOperationException();
         }
     }
 
@@ -68,21 +69,35 @@ public sealed class Secp256k1 : ECCurve
     /// <param name="privateKey"></param>
     /// <param name="data"></param>
     /// <param name="destination"></param>
-#pragma warning disable CA1822
-    public void SignRecoverable(ReadOnlySpan<byte> privateKey, ReadOnlySpan<byte> data, Span<byte> destination)
-#pragma warning restore CA1822
+    /// <param name="recoverable"></param>
+    protected override void SignInner(ReadOnlySpan<byte> privateKey, ReadOnlySpan<byte> data, Span<byte> destination, bool recoverable)
     {
-        if(destination.Length != Secp256k1Net.Secp256k1.UNSERIALIZED_SIGNATURE_SIZE)
-        {
-            throw new ArgumentException($"Invalid destination length, has to be {Secp256k1Net.Secp256k1.UNSERIALIZED_SIGNATURE_SIZE} bytes", nameof(destination));
-        }
-
         var mutablePrivateKey = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(privateKey), privateKey.Length);
         var mutableData = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(data), data.Length);
 
-        if(!_secp256k1.SignRecoverable(destination, mutableData, mutablePrivateKey))
+        if(recoverable)
         {
-            throw new NotSupportedException("Signing with secp256k1 failed");
+            if(destination.Length != RecoverableSignatureLength)
+            {
+                throw new ArgumentException($"Invalid destination length, has to be {RecoverableSignatureLength} bytes", nameof(destination));
+            }
+
+            if(!_secp256k1.SignRecoverable(destination, mutableData, mutablePrivateKey))
+            {
+                throw new NotSupportedException("Signing with secp256k1 failed");
+            }
+        }
+        else
+        {
+            if(destination.Length != NonRecoverableSignatureLength)
+            {
+                throw new ArgumentException($"Invalid destination length, has to be {NonRecoverableSignatureLength} bytes", nameof(destination));
+            }
+
+            if(!_secp256k1.Sign(destination, mutableData, mutablePrivateKey))
+            {
+                throw new NotSupportedException("Signing with secp256k1 failed");
+            }
         }
     }
 
