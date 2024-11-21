@@ -115,7 +115,7 @@ public abstract class BaseHdWallet
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public byte[] Sign(ReadOnlySpan<byte> data)
+    public virtual byte[] Sign(ReadOnlySpan<byte> data)
     {
         byte[] signature = new byte[_curve.SignatureLength];
         _curve.Sign(_privateKey, data, signature);
@@ -128,7 +128,7 @@ public abstract class BaseHdWallet
     /// <param name="data"></param>
     /// <param name="destination"></param>
     /// <returns></returns>
-    public bool TrySign(ReadOnlySpan<byte> data, Span<byte> destination)
+    public virtual bool TrySign(ReadOnlySpan<byte> data, Span<byte> destination)
     {
         if(destination.Length != _curve.SignatureLength)
         {
