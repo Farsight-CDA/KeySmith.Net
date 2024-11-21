@@ -61,6 +61,31 @@ public sealed class Secp256k1 : ECCurve
             throw new NotSupportedException("Signing with secp256k1 failed");
         }
     }
+
+    /// <summary>
+    /// Signs data using the given private key and writes it to the given destination.
+    /// </summary>
+    /// <param name="privateKey"></param>
+    /// <param name="data"></param>
+    /// <param name="destination"></param>
+#pragma warning disable CA1822
+    public void SignRecoverable(ReadOnlySpan<byte> privateKey, ReadOnlySpan<byte> data, Span<byte> destination)
+#pragma warning restore CA1822
+    {
+        if(destination.Length != Secp256k1Net.Secp256k1.UNSERIALIZED_SIGNATURE_SIZE)
+        {
+            throw new ArgumentException($"Invalid destination length, has to be {Secp256k1Net.Secp256k1.UNSERIALIZED_SIGNATURE_SIZE} bytes", nameof(destination));
+        }
+
+        var mutablePrivateKey = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(privateKey), privateKey.Length);
+        var mutableData = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(data), data.Length);
+
+        if(!_secp256k1.SignRecoverable(destination, mutableData, mutablePrivateKey))
+        {
+            throw new NotSupportedException("Signing with secp256k1 failed");
+        }
+    }
+
     /// <inheritdoc/>
     public override bool Verify(ReadOnlySpan<byte> publicKey, ReadOnlySpan<byte> data, ReadOnlySpan<byte> signature)
     {
