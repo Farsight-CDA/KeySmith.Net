@@ -42,10 +42,9 @@ public sealed class Secp256k1 : WeierstrassCurve
         }
 
         var mutablePrivateKey = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(privateKey), privateKey.Length);
-
         Span<byte> publicKeyBuffer = stackalloc byte[64];
 
-        if(!_secp256k1.PublicKeyCreate(destination, mutablePrivateKey))
+        if(!_secp256k1.PublicKeyCreate(publicKeyBuffer, mutablePrivateKey))
         {
             throw new InvalidOperationException();
         }
@@ -61,6 +60,11 @@ public sealed class Secp256k1 : WeierstrassCurve
     /// <inheritdoc/>
     public override void MakeUncompressedPublicKey(ReadOnlySpan<byte> privateKey, Span<byte> destination)
     {
+        if(destination.Length != UncompressedPublicKeyLength)
+        {
+            throw new ArgumentException($"Invalid destination length, has to be {UncompressedPublicKeyLength} bytes", nameof(destination));
+        }
+
         var mutablePrivateKey = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(privateKey), privateKey.Length);
 
         if(!_secp256k1.PublicKeyCreate(destination, mutablePrivateKey))
