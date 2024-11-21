@@ -256,6 +256,7 @@ public static class BIP44
 
             if(segment.Length == 0 && pathIndex == -1)
             {
+                pathIndex = 0;
                 continue;
             }
 
