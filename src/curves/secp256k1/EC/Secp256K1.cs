@@ -41,8 +41,14 @@ public sealed class Secp256k1 : WeierstrassCurve
             throw new ArgumentException($"Invalid destination length, has to be {CompressedPublicKeyLength} bytes", nameof(destination));
         }
 
+        var mutablePrivateKey = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(privateKey), privateKey.Length);
+
         Span<byte> publicKeyBuffer = stackalloc byte[64];
-        MakeUncompressedPublicKey(privateKey, publicKeyBuffer);
+
+        if(!_secp256k1.PublicKeyCreate(destination, mutablePrivateKey))
+        {
+            throw new InvalidOperationException();
+        }
 
         var x = publicKeyBuffer[..32];
         var y = publicKeyBuffer[32..];
