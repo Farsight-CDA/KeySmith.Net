@@ -61,6 +61,12 @@ public sealed class Secp256k1 : WeierstrassCurve
         {
             throw new InvalidOperationException();
         }
+
+        if(BitConverter.IsLittleEndian)
+        {
+            destination[0..32].Reverse();
+            destination[32..].Reverse();
+        }
     }
 
     /// <summary>
