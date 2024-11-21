@@ -21,7 +21,7 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<PackageTags>Secp256k1;BIP32;BIP39;BIP44;Wallet;Bitcoin;Ethereum;Solana;Cardano</PackageTags>
+		<PackageTags>SLIP10;Secp256k1;BIP32;BIP39;BIP44;Wallet;Bitcoin;Ethereum;Solana;Cardano</PackageTags>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
