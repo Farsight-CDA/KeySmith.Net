@@ -65,12 +65,11 @@ public class ED25519 : EDCurve
     /// <inheritdoc />
     public override bool Verify(ReadOnlySpan<byte> publicKey, ReadOnlySpan<byte> data, ReadOnlySpan<byte> signature)
     {
-        if(!PublicKey.TryImport(SignatureAlgorithm.Ed25519, publicKey, KeyBlobFormat.RawPublicKey, out var key!))
+        if(!PublicKey.TryImport(SignatureAlgorithm.Ed25519, publicKey, KeyBlobFormat.RawPublicKey, out var key))
         {
             throw new NotSupportedException();
         }
         //
-        return SignatureAlgorithm.Ed25519.Verify(key, data, signature);
+        return SignatureAlgorithm.Ed25519.Verify(key!, data, signature);
     }
-
 }
