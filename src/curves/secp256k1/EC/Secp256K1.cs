@@ -71,12 +71,6 @@ public sealed class Secp256k1 : WeierstrassCurve
         {
             throw new InvalidOperationException();
         }
-
-        if(BitConverter.IsLittleEndian)
-        {
-            destination[0..32].Reverse();
-            destination[32..].Reverse();
-        }
     }
 
     /// <summary>
@@ -110,16 +104,16 @@ public sealed class Secp256k1 : WeierstrassCurve
                 throw new ArgumentException($"Invalid destination length, has to be {NonRecoverableSignatureLength} bytes", nameof(destination));
             }
 
-            if(!_secp256k1.Sign(destination, mutableData, mutablePrivateKey))
+            Span<byte> unserializedSignatureBuffer = stackalloc byte[Secp256k1Net.Secp256k1.UNSERIALIZED_SIGNATURE_SIZE];
+
+            if(!_secp256k1.Sign(unserializedSignatureBuffer, mutableData, mutablePrivateKey))
             {
                 throw new NotSupportedException("Signing with secp256k1 failed");
             }
-        }
-
-        if(BitConverter.IsLittleEndian)
-        {
-            destination[..32].Reverse();
-            destination[32..64].Reverse();
+            if(!_secp256k1.SignatureSerializeCompact(destination, unserializedSignatureBuffer))
+            {
+                throw new NotSupportedException("Compacting signature failed");
+            }
         }
     }
 
