@@ -1,4 +1,5 @@
 ﻿using Keysmith.Net.SLIP;
+using System.Buffers.Binary;
 using System.Security.Cryptography;
 
 namespace Keysmith.Net.EC;
@@ -69,11 +70,7 @@ public abstract class EdwardCurve : ECCurve
             currentKey.CopyTo(dataBuffer[1..]);
         }
 
-        _ = BitConverter.TryWriteBytes(dataBuffer[^4..], index);
-        if(BitConverter.IsLittleEndian)
-        {
-            dataBuffer[^4..].Reverse();
-        }
+        BinaryPrimitives.WriteUInt32BigEndian(dataBuffer[^4..], index);
 
         Span<byte> digest = stackalloc byte[64];
         _ = HMACSHA512.HashData(currentChainCode, dataBuffer, digest);

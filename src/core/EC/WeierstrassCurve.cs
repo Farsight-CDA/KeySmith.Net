@@ -1,4 +1,5 @@
 ﻿using Keysmith.Net.SLIP;
+using System.Buffers.Binary;
 using System.Numerics;
 using System.Security.Cryptography;
 
@@ -157,11 +158,7 @@ public abstract class WeierstrassCurve : ECCurve
             currentKey.CopyTo(dataBuffer[1..]);
         }
 
-        _ = BitConverter.TryWriteBytes(dataBuffer[^4..], index);
-        if(BitConverter.IsLittleEndian)
-        {
-            dataBuffer[^4..].Reverse();
-        }
+        BinaryPrimitives.WriteUInt32BigEndian(dataBuffer[^4..], index);
 
         var currentKeyNum = new BigInteger(currentKey, isUnsigned: true, isBigEndian: true);
         BigInteger newKeyNum = 0;
