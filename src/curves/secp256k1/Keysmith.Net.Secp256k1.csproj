@@ -13,7 +13,7 @@
 		<Company>Farsight CDA Crypto Development &amp; Analytics UG</Company>
 		<Authors>Playwo</Authors>
 		<Description>Secp256k1 implementation for Keysmith.Net</Description>
-		<PackageIcon>logo.jpg</PackageIcon>
+		<PackageIcon>logo.png</PackageIcon>
 		<RepositoryUrl>https://github.com/farsight-CDA/Keysmith.Net</RepositoryUrl>
 		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
 		<AnalysisLevel>latest-all</AnalysisLevel>
@@ -36,7 +36,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\..\..\img\logo.jpg">
+		<None Include="..\..\..\img\logo.png">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>

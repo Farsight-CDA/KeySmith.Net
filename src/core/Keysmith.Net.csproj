@@ -13,7 +13,7 @@
 		<Company>Farsight CDA Crypto Development &amp; Analytics UG</Company>
 		<Authors>Playwo</Authors>
 		<Description>Highly optimized implementations of common blockchain cryptography like BIP32, BIP39 and BIP44</Description>
-		<PackageIcon>logo.jpg</PackageIcon>
+		<PackageIcon>logo.png</PackageIcon>
 		<RepositoryUrl>https://github.com/farsight-CDA/Keysmith.Net</RepositoryUrl>
 		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
 		<AnalysisLevel>latest-all</AnalysisLevel>
@@ -35,7 +35,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="..\..\img\logo.jpg">
+		<None Include="..\..\img\logo.png">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
