@@ -289,7 +289,7 @@ public static class BIP44
     {
         if(values.Length != destination.Length)
         {
-            throw new ArgumentException($"Destionation must have a length of {values.Length}.", nameof(destination));
+            throw new ArgumentException($"Destination must have a length of {values.Length}.", nameof(destination));
         }
 
         values.CopyTo(destination);
