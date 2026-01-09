@@ -5,7 +5,7 @@
 	<PropertyGroup>
 		<FileVersion>$(AssemblyVersion)</FileVersion>
 		<Version>$(AssemblyVersion)</Version>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Title>Keysmith.Net.ED25519</Title>
@@ -32,7 +32,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NSec.Cryptography" Version="24.4.0" />
+		<PackageReference Include="NSec.Cryptography" Version="25.4.0" />
 	</ItemGroup>
 
 	<ItemGroup>

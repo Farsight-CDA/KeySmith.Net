@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<OutputType>Exe</OutputType>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
@@ -17,10 +17,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
-		<PackageReference Include="Nethereum.HdWallet" Version="4.26.0" />
+		<PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
+		<PackageReference Include="Nethereum.HdWallet" Version="5.8.0" />
 		<PackageReference Include="Secp256k1.Native" Version="0.1.24-alpha" />
-		<PackageReference Include="NSec.Cryptography" Version="24.4.0" />
+		<PackageReference Include="NSec.Cryptography" Version="25.4.0" />
 	</ItemGroup>
 
 	<ItemGroup>

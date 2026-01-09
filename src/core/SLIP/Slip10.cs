@@ -73,6 +73,7 @@ public static class Slip10
 
         byte[] keyBuffer = new byte[32];
         byte[] chainCodeBuffer = new byte[32];
+
         curve.DerivePath(seed, keyBuffer, chainCodeBuffer, path);
         return (keyBuffer, chainCodeBuffer);
     }
