@@ -117,19 +117,23 @@ public static class BIP44
         }
 
         int pathLength = path.Count('/');
-        var subPath = path[1..];
+
+        if(pathLength == 0)
+        {
+            return [];
+        }
 
         uint[] pathBuffer = new uint[pathLength];
 
-        int pathIndex = -1;
+        int pathIndex = 0;
+        var subPath = path[2..]; // Skip 'm/'
         foreach(var range in subPath.Split('/'))
         {
             var segment = subPath[range];
 
-            if(segment.Length == 0 && pathIndex == -1)
+            if(segment.Length == 0)
             {
-                pathIndex = 0;
-                continue;
+                throw new ArgumentException($"Invalid derivation path. Empty segment at index {pathIndex}", nameof(path));
             }
 
             bool isHardened = segment[^1] == '\'' || segment[^1] == 'h';
@@ -146,6 +150,11 @@ public static class BIP44
             if(isHardened)
             {
                 derivStep = derivStep += Slip10.HardenedOffset;
+            }
+
+            if(pathIndex >= pathBuffer.Length)
+            {
+                throw new ArgumentException("Invalid derivation path. Path length mismatch.", nameof(path));
             }
 
             pathBuffer[pathIndex] = derivStep;
@@ -165,59 +174,10 @@ public static class BIP44
     /// <exception cref="ArgumentException"></exception>
     public static void Parse(ReadOnlySpan<char> path, Span<uint> destination, out int bytesWritten)
     {
-        if(path.Length == 0 || path[0] != 'm')
+        if(!TryParse(path, destination, out bytesWritten))
         {
-            throw new ArgumentException("Invalid derivation path", nameof(path));
+            throw new InvalidOperationException("Parsing BIP44 derivation path failed");
         }
-        if(path.Length > 1 && path[1] != '/')
-        {
-            throw new ArgumentException("Invalid derivation path", nameof(path));
-        }
-
-        int pathLength = path.Count('/');
-
-        if(destination.Length < pathLength)
-        {
-            throw new ArgumentException("Destination too short", nameof(destination));
-        }
-
-        var subPath = path[1..];
-
-        uint[] pathBuffer = new uint[pathLength];
-
-        int pathIndex = -1;
-        foreach(var range in subPath.Split('/'))
-        {
-            var segment = subPath[range];
-
-            if(segment.Length == 0 && pathIndex == -1)
-            {
-                pathIndex = 0;
-                continue;
-            }
-
-            bool isHardened = segment[^1] == '\'' || segment[^1] == 'h';
-
-            if(!uint.TryParse(isHardened ? segment[..^1] : segment, out uint derivStep))
-            {
-                throw new ArgumentException($"Invalid derivation path. Failed to parse at index {pathIndex}", nameof(path));
-            }
-            if(derivStep >= Slip10.HardenedOffset)
-            {
-                throw new ArgumentException($"Invalid derivation path. Path to large at index {pathIndex}", nameof(path));
-            }
-
-            if(isHardened)
-            {
-                derivStep = derivStep += Slip10.HardenedOffset;
-            }
-
-            pathBuffer[pathIndex] = derivStep;
-            pathIndex++;
-        }
-
-        bytesWritten = pathLength;
-        pathBuffer.CopyTo(destination);
     }
 
     /// <summary>
@@ -241,23 +201,27 @@ public static class BIP44
 
         int pathLength = path.Count('/');
 
-        if(destination.Length < pathLength)
+        if(destination.Length != pathLength)
         {
             return false;
         }
 
-        var subPath = path[1..];
-        Span<uint> pathBuffer = stackalloc uint[pathLength];
+        if(pathLength == 0)
+        {
+            bytesWritten = 0;
+            return true;
+        }
 
-        int pathIndex = -1;
+        var subPath = path[2..];
+
+        int pathIndex = 0;
         foreach(var range in subPath.Split('/'))
         {
             var segment = subPath[range];
 
-            if(segment.Length == 0 && pathIndex == -1)
+            if(segment.Length == 0)
             {
-                pathIndex = 0;
-                continue;
+                return false;
             }
 
             bool isHardened = segment[^1] == '\'' || segment[^1] == 'h';
@@ -276,12 +240,11 @@ public static class BIP44
                 derivStep = derivStep += Slip10.HardenedOffset;
             }
 
-            pathBuffer[pathIndex] = derivStep;
+            destination[pathIndex] = derivStep;
             pathIndex++;
         }
 
         bytesWritten = pathLength;
-        pathBuffer.CopyTo(destination);
         return true;
     }
 
