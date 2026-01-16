@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Curves/">
+    <Project Path="src/curves/ed25519/Keysmith.Net.ED25519.csproj" />
+    <Project Path="src/curves/secp256k1/Keysmith.Net.Secp256k1.csproj" />
+  </Folder>
+  <Project Path="bench/Keysmith.Net.Bench.csproj" />
+  <Project Path="src/core/Keysmith.Net.csproj" />
+  <Project Path="test/Keysmith.Net.Tests.csproj" />
+</Solution>
