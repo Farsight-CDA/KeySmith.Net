@@ -1,0 +1,20 @@
+{
+	"name": "C# (.NET)",
+	"image": "mcr.microsoft.com/devcontainers/dotnet:2-10.0-noble",
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "lts"
+		}
+	},
+	"postCreateCommand": "sudo chown -R vscode:vscode /home/vscode/ && curl -fsSL https://opencode.ai/install | bash",
+	"mounts": [
+		"source=${localEnv:USERPROFILE}/.local/share/opencode/auth.json,target=/home/vscode/.local/share/opencode/auth.json,type=bind,consistency=cached"
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-dotnettools.csdevkit"
+			]
+		}
+	}
+}

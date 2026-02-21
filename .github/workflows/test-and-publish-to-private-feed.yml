@@ -1,0 +1,58 @@
+name: Test and Publish to Private NuGet Feed
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Run Tests
+        run: dotnet test
+
+      - name: Build the project
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Calculate next package version
+        id: package_version
+        shell: bash
+        run: |
+          version="$(dotnet msbuild src/core/Keysmith.Net.csproj -nologo -getProperty:Version)"
+
+          if [[ -z "$version" ]]; then
+            echo "Could not find Version element in src/core/Keysmith.Net.csproj"
+            exit 1
+          fi
+
+          if [[ ! "$version" =~ ^([0-9]+\.[0-9]+\.[0-9]+)(-.*)?$ ]]; then
+            echo "Unexpected Version format '$version' in src/core/Keysmith.Net.csproj"
+            exit 1
+          fi
+
+          base_version="${BASH_REMATCH[1]}"
+          build_number="${{ github.run_number }}"
+          run_attempt="${{ github.run_attempt }}"
+          package_version="$base_version-private.$build_number.$run_attempt"
+
+          echo "version=$package_version" >> "$GITHUB_OUTPUT"
+
+      - name: Pack the project
+        run: dotnet pack --configuration Release --no-build --output ./nupkgs /p:Version=${{ steps.package_version.outputs.version }}
+
+      - name: Publish to NuGet
+        env:
+          API_KEY: ${{ secrets.NUGET_PRIVATE_API_KEY }}
+        run: dotnet nuget push ./nupkgs/*.nupkg --source https://nuget.farsight-cda.de/nuget/farsight-packages/v3/index.json --api-key $API_KEY --skip-duplicate
